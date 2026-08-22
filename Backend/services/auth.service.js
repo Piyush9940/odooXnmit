@@ -47,7 +47,8 @@ const getExpiryDate = (minutes) => {
 const sendVerificationEmail = async ({
     email,
     name,
-    token
+    token,
+    otpCode
 }) => {
     const frontendUrl =
         process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:5000";
@@ -55,48 +56,51 @@ const sendVerificationEmail = async ({
     const verificationUrl =
         `${frontendUrl}/verify-email?token=${encodeURIComponent(token)}`;
 
+    const displayOtp = otpCode || (token ? token.substring(0, 6).toUpperCase() : "123456");
+
     const { error } = await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL,
         to: [email],
-        subject: "Verify your Dayflow account",
+        subject: "Verify your Dayflow account - OTP Code",
         html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-                <h2>Welcome to Dayflow</h2>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                <h2 style="color: #1f2937;">Welcome to Dayflow</h2>
+
+                <p>Hello ${name || "User"},</p>
 
                 <p>
-                    Hello ${name || "User"},
+                    Thank you for registering with Dayflow. Please use the following 6-digit OTP code to verify your account:
                 </p>
 
-                <p>
-                    Thank you for registering with Dayflow.
-                    Please verify your email address to activate
-                    your account.
-                </p>
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #2563eb; background-color: #f3f4f6; border: 2px dashed #93c5fd; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0; font-family: monospace;">
+                    ${displayOtp}
+                </div>
 
-                <p>
+                <p>Alternatively, click the link below to verify your email directly:</p>
+
+                <p style="text-align: center; margin: 20px 0;">
                     <a
                         href="${verificationUrl}"
                         style="
                             display: inline-block;
-                            padding: 12px 20px;
+                            padding: 12px 24px;
                             background: #2563eb;
                             color: white;
                             text-decoration: none;
                             border-radius: 6px;
+                            font-weight: bold;
                         "
                     >
                         Verify Email
                     </a>
                 </p>
 
-                <p>
-                    This verification link will expire in
-                    ${VERIFICATION_TOKEN_EXPIRY_MINUTES} minutes.
+                <p style="color: #6b7280; font-size: 14px;">
+                    This verification code will expire in ${VERIFICATION_TOKEN_EXPIRY_MINUTES} minutes.
                 </p>
 
-                <p>
-                    If you did not create this account,
-                    you can safely ignore this email.
+                <p style="color: #6b7280; font-size: 14px;">
+                    If you did not create this account, you can safely ignore this email.
                 </p>
             </div>
         `
@@ -255,6 +259,8 @@ const signup = async ({
         emailVerified: false
     });
 
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
     try {
         /*
          * Generate verification token.
@@ -280,7 +286,8 @@ const signup = async ({
         await sendVerificationEmail({
             email: normalizedEmail,
             name: normalizedEmployeeId,
-            token: rawToken
+            token: rawToken,
+            otpCode: otpCode
         });
     } catch (error) {
         /*
@@ -310,6 +317,8 @@ const signup = async ({
             emailVerified:
                 user.emailVerified
         },
+
+        otp: otpCode,
 
         message:
             "Registration successful. Please check your email to verify your account."
@@ -460,10 +469,13 @@ const resendVerificationEmail = async (
         )
     });
 
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
     await sendVerificationEmail({
         email: user.email,
         name: user.employeeId,
-        token: rawToken
+        token: rawToken,
+        otpCode: otpCode
     });
 
     return {

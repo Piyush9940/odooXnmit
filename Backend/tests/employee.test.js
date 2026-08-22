@@ -30,9 +30,10 @@ describe("Employee API", () => {
         role: "employee"
     };
 
-    const buildEmployee = (user = new mongoose.Types.ObjectId(), suffix = Date.now()) => ({
+    let empCounter = 1000;
+    const buildEmployee = (user = new mongoose.Types.ObjectId()) => ({
         user,
-        employeeId: `EMP${Math.floor(100 + Math.random() * 899)}`,
+        employeeId: `EMP${empCounter++}${Math.floor(100 + Math.random() * 899)}`,
         personalDetails: {
             firstName: "Test",
             lastName: "Employee",
