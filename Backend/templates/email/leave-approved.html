@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Leave Request Approved - Dayflow</title>
+</head>
+
+<body
+    style="
+        margin: 0;
+        padding: 0;
+        background-color: #f5f7fb;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1f2937;
+    "
+>
+
+    <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="
+            background-color: #f5f7fb;
+            padding: 40px 20px;
+        "
+    >
+
+        <tr>
+            <td align="center">
+
+                <table
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    style="
+                        max-width: 600px;
+                        background-color: #ffffff;
+                        border-radius: 12px;
+                        overflow: hidden;
+                    "
+                >
+
+                    <!-- Header -->
+
+                    <tr>
+                        <td
+                            style="
+                                padding: 30px;
+                                text-align: center;
+                                background-color: #111827;
+                            "
+                        >
+
+                            <h1
+                                style="
+                                    margin: 0;
+                                    color: #ffffff;
+                                    font-size: 28px;
+                                    font-weight: 700;
+                                "
+                            >
+                                Dayflow
+                            </h1>
+
+                            <p
+                                style="
+                                    margin: 8px 0 0;
+                                    color: #d1d5db;
+                                    font-size: 14px;
+                                "
+                            >
+                                Every workday, perfectly aligned.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+
+                    <tr>
+                        <td
+                            style="
+                                padding: 40px 35px;
+                            "
+                        >
+
+                            <h2
+                                style="
+                                    margin: 0 0 20px;
+                                    font-size: 24px;
+                                    color: #111827;
+                                "
+                            >
+                                Leave Request Approved
+                            </h2>
+
+                            <p
+                                style="
+                                    margin: 0 0 15px;
+                                    font-size: 16px;
+                                    line-height: 1.6;
+                                "
+                            >
+                                Hello {{name}},
+                            </p>
+
+                            <p
+                                style="
+                                    margin: 0 0 25px;
+                                    font-size: 16px;
+                                    line-height: 1.6;
+                                    color: #4b5563;
+                                "
+                            >
+                                Your leave request has been
+                                <strong>approved</strong> by the
+                                administrator.
+                            </p>
+
+                            <!-- Status -->
+
+                            <table
+                                width="100%"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                style="
+                                    margin: 20px 0 30px;
+                                    background-color: #f0fdf4;
+                                    border-radius: 8px;
+                                "
+                            >
+
+                                <tr>
+                                    <td
+                                        style="
+                                            padding: 18px;
+                                            text-align: center;
+                                        "
+                                    >
+
+                                        <p
+                                            style="
+                                                margin: 0;
+                                                font-size: 18px;
+                                                font-weight: 700;
+                                                color: #166534;
+                                            "
+                                        >
+                                            APPROVED
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <!-- Leave Details -->
+
+                            <table
+                                width="100%"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                style="
+                                    border: 1px solid #e5e7eb;
+                                    border-radius: 8px;
+                                "
+                            >
+
+                                <tr>
+
+                                    <td
+                                        width="40%"
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            color: #6b7280;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        Leave Type
+                                    </td>
+
+                                    <td
+                                        width="60%"
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #111827;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        {{leaveType}}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            color: #6b7280;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        Start Date
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #111827;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        {{startDate}}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            color: #6b7280;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        End Date
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #111827;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        {{endDate}}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            color: #6b7280;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        Number of Days
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #111827;
+                                            border-bottom: 1px solid #e5e7eb;
+                                        "
+                                    >
+                                        {{numberOfDays}}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            color: #6b7280;
+                                        "
+                                    >
+                                        Approved By
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 14px 18px;
+                                            font-size: 14px;
+                                            font-weight: 600;
+                                            color: #111827;
+                                        "
+                                    >
+                                        {{approvedBy}}
+                                    </td>
+
+                                </tr>
+
+                            </table>
+
+                            <!-- Admin Comment -->
+
+                            <div
+                                style="
+                                    margin-top: 25px;
+                                    padding: 18px;
+                                    background-color: #f9fafb;
+                                    border-radius: 8px;
+                                "
+                            >
+
+                                <p
+                                    style="
+                                        margin: 0 0 8px;
+                                        font-size: 14px;
+                                        font-weight: 600;
+                                        color: #111827;
+                                    "
+                                >
+                                    Admin Comment
+                                </p>
+
+                                <p
+                                    style="
+                                        margin: 0;
+                                        font-size: 14px;
+                                        line-height: 1.6;
+                                        color: #6b7280;
+                                    "
+                                >
+                                    {{comment}}
+                                </p>
+
+                            </div>
+
+                            <!-- Dashboard Button -->
+
+                            <table
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                style="margin: 30px auto 0;"
+                            >
+
+                                <tr>
+                                    <td
+                                        align="center"
+                                        style="
+                                            border-radius: 8px;
+                                            background-color: #2563eb;
+                                        "
+                                    >
+
+                                        <a
+                                            href="{{dashboardUrl}}"
+                                            target="_blank"
+                                            style="
+                                                display: inline-block;
+                                                padding: 14px 28px;
+                                                color: #ffffff;
+                                                text-decoration: none;
+                                                font-size: 16px;
+                                                font-weight: 600;
+                                            "
+                                        >
+                                            View Leave Details
+                                        </a>
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Information -->
+
+                    <tr>
+                        <td
+                            style="
+                                padding: 0 35px 35px;
+                            "
+                        >
+
+                            <div
+                                style="
+                                    padding: 15px;
+                                    background-color: #f9fafb;
+                                    border-radius: 8px;
+                                    font-size: 13px;
+                                    line-height: 1.6;
+                                    color: #6b7280;
+                                "
+                            >
+
+                                Your attendance records will reflect
+                                the approved leave according to the
+                                organization's attendance policy.
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+
+                    <tr>
+                        <td
+                            style="
+                                padding: 25px;
+                                text-align: center;
+                                background-color: #f9fafb;
+                                border-top: 1px solid #e5e7eb;
+                            "
+                        >
+
+                            <p
+                                style="
+                                    margin: 0 0 8px;
+                                    font-size: 13px;
+                                    color: #6b7280;
+                                "
+                            >
+                                © {{year}} Dayflow
+                            </p>
+
+                            <p
+                                style="
+                                    margin: 0;
+                                    font-size: 12px;
+                                    color: #9ca3af;
+                                "
+                            >
+                                Human Resource Management System
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+
+    </table>
+
+</body>
+
+</html>
