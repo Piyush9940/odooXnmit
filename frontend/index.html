@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Dayflow · HR & Employee Management System</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --secondary-dark: #6d28d9;
+            --success: #10b981;
+            --accent: #f59e0b;
+            
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px -10px rgba(37, 99, 235, 0.12);
+            
+            --radius-md: 12px;
+            --radius-lg: 1.25rem;
+            --radius-pill: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f8fafc 0%, #edf2f7 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Ambient Background Orbs */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.35;
+            z-index: -1;
+            animation: float 14s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(37, 99, 235, 0.25);
+            top: -10%;
+            left: -5%;
+        }
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(124, 58, 237, 0.2);
+            right: -5%;
+            top: 20%;
+            animation-delay: -6s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-40px) scale(1.08); }
+        }
+
+        /* Navbar */
+        .navbar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-pill);
+            padding: 0.65rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .brand-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.35rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            color: var(--text-main);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-lg {
+            padding: 0.85rem 1.85rem;
+            font-size: 1.02rem;
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 8rem 1.5rem 4rem 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            max-width: 850px;
+            margin: 0 auto 5rem auto;
+        }
+
+        .system-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            padding: 0.45rem 1.1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .hero-title {
+            font-size: 3.75rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.035em;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            margin-bottom: 2.5rem;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Dynamic Stats Banner */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 5rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin: 0 auto 1rem auto;
+        }
+
+        .stat-number {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .feature-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .hero-actions { flex-direction: column; width: 100%; }
+            .btn-lg { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar-container">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="brand-text">Dayflow</div>
+            </div>
+
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+
+            <div class="nav-actions" id="navActions">
+                <a href="sign-in.html" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+                <a href="sign-up.html" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="system-badge">
+                <span class="status-dot" id="serverStatusDot"></span>
+                <span id="serverStatusText">Connecting to API...</span>
+            </div>
+            <h1 class="hero-title">
+                Every workday, <br/> <span class="gradient-text">perfectly aligned.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Streamline workforce attendance, leave management, and payroll calculation with Dayflow's modern REST API HR platform.
+            </p>
+            <div class="hero-actions" id="heroActions">
+                <a href="sign-up.html" class="btn btn-primary btn-lg">
+                    Get Started Free <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="sign-in.html" class="btn btn-outline btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Portal
+                </a>
+            </div>
+        </section>
+
+        <!-- Dynamic System Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number" id="statEmployees">--</div>
+                <div class="stat-label">Active Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-number" id="statAttendance">99.4%</div>
+                <div class="stat-label">System Uptime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+                <div class="stat-number" id="statResponseTime">< 50ms</div>
+                <div class="stat-label">API Latency</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-number">JWT</div>
+                <div class="stat-label">Bearer Token Security</div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section id="features" class="section-header">
+            <div class="section-subtitle">Core Capabilities</div>
+            <h2 class="section-title">Built for Modern Workplaces</h2>
+        </section>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user-clock"></i></div>
+                <h3 class="feature-title">Smart Attendance</h3>
+                <p class="feature-desc">Record daily check-ins and check-outs with automatic working hours computation and real-time status logging.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-calendar-minus"></i></div>
+                <h3 class="feature-title">Leave Management</h3>
+                <p class="feature-desc">Submit leave applications with automatic day calculation and track real-time manager approval statuses.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <h3 class="feature-title">Automated Payroll</h3>
+                <p class="feature-desc">Compute basic salary, allowances, and deductions with instant PDF salary slip downloads.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>
+            <strong>Dayflow HRMS</strong> &copy; 2026. All rights reserved.
+        </div>
+        <div>
+            Connected to Live API Server
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            checkServerHealth();
+            checkUserSession();
+        });
+
+        async function checkServerHealth() {
+            const statusDot = document.getElementById("serverStatusDot");
+            const statusText = document.getElementById("serverStatusText");
+            try {
+                const res = await fetch(`${API_BASE_URL.replace('/api', '')}/api/health`);
+                if (res.ok) {
+                    const data = await res.json();
+                    statusText.innerText = "Backend API Server: Online";
+                    statusDot.style.background = "#10b981";
+                    statusDot.style.boxShadow = "0 0 10px #10b981";
+                } else {
+                    statusText.innerText = "API Status: Reduced";
+                    statusDot.style.background = "#f59e0b";
+                }
+            } catch (e) {
+                statusText.innerText = "Backend API Server: Offline";
+                statusDot.style.background = "#ef4444";
+                statusDot.style.boxShadow = "0 0 10px #ef4444";
+            }
+        }
+
+        function checkUserSession() {
+            if (typeof isAuthenticated === "function" && isAuthenticated()) {
+                const role = (getUserRole() || "").toUpperCase();
+                const navActions = document.getElementById("navActions");
+                const heroActions = document.getElementById("heroActions");
+                
+                const targetUrl = role === "ADMIN" ? "admin-dashboard.html" : "employee-dashboard.html";
+                const badgeText = role === "ADMIN" ? "Admin Portal" : "Employee Portal";
+
+                if (navActions) {
+                    navActions.innerHTML = `
+                        <a href="${targetUrl}" class="btn btn-primary">
+                            <i class="fas fa-columns"></i> ${badgeText}
+                        </a>
+                    `;
+                }
+
+                if (heroActions) {
+                    heroActions.innerHTML = `
+                        <a href="${targetUrl}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-columns"></i> Launch ${badgeText}
+                        </a>
+                        <a href="javascript:void(0)" onclick="logoutUser()" class="btn btn-outline btn-lg">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </a>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -810,13 +810,15 @@
                     const result = await loginUser(email, password, rememberCheck.checked);
                     setLoading(false);
                     if (result.success) {
-                        showToast(`Welcome back, ${result.data.user.name || email.split('@')[0]}!`, 'success');
-                        const role = getUserRole();
-                        if (role === 'ADMIN') {
-                            window.location.href = 'admin-dashboard.html';
-                        } else {
-                            window.location.href = 'employee-dashboard.html';
-                        }
+                        showToast(`Welcome back, ${result.data?.user?.name || email.split('@')[0]}!`, 'success');
+                        const userRole = (result.data?.user?.role || getUserRole() || '').toUpperCase();
+                        setTimeout(() => {
+                            if (userRole === 'ADMIN') {
+                                window.location.href = 'admin-dashboard.html';
+                            } else {
+                                window.location.href = 'employee-dashboard.html';
+                            }
+                        }, 400);
                     } else {
                         setFieldError(emailWrap, emailError, ' ');
                         setFieldError(passWrap, passError, ' ');

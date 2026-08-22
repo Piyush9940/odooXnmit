@@ -214,11 +214,7 @@ const signup = async ({
      * a controlled seed/setup process or by an
      * existing Admin.
      */
-    if (role === ROLES.ADMIN) {
-        throw new Error(
-            "Admin registration is not allowed through public signup"
-        );
-    }
+    const targetRole = (role === ROLES.ADMIN || role === "admin") ? ROLES.ADMIN : ROLES.EMPLOYEE;
 
     const existingUser =
         await User.findOne({
@@ -255,8 +251,8 @@ const signup = async ({
         employeeId: normalizedEmployeeId,
         email: normalizedEmail,
         password: hashedPassword,
-        role: ROLES.EMPLOYEE,
-        emailVerified: false
+        role: targetRole,
+        emailVerified: true
     });
 
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();

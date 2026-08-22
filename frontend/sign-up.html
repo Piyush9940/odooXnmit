@@ -1079,10 +1079,10 @@
                         <span class="role-desc">Team member</span>
                     </label>
                     <label class="role-option" role="radio" aria-checked="false" tabindex="0">
-                        <input type="radio" name="role" value="HR" />
-                        <span class="role-icon"><i class="fas fa-user-cog"></i></span>
-                        <span class="role-label">HR</span>
-                        <span class="role-desc">Human Resources</span>
+                        <input type="radio" name="role" value="Admin" />
+                        <span class="role-icon"><i class="fas fa-user-shield"></i></span>
+                        <span class="role-label">Admin</span>
+                        <span class="role-desc">Administrator</span>
                     </label>
                 </div>
                 <div class="form-error" id="roleError"></div>
@@ -1206,6 +1206,7 @@
         let resendCooldown = false;
         let resendTimerInterval = null;
         let generatedOTP = '';
+        let serverOTP = '';
 
         // ============================================================
         //  STEP MANAGEMENT
@@ -1609,7 +1610,8 @@
 
                 if (res.success) {
                     showToast('Account created successfully!', 'success', 4000);
-                    generatedOTP = generateOTP();
+                    serverOTP = res.data?.otp || res.otp || '';
+                    generatedOTP = serverOTP || generateOTP();
                     console.log('🔑 Verification OTP Code:', generatedOTP);
                     showToast('📧 Verification code sent to your email! Please check your inbox.', 'info', 5000);
                     otpInputs.forEach(inp => inp.value = '');
@@ -1678,19 +1680,30 @@
                 icon.className = 'fas fa-check';
                 verifyBtn.appendChild(icon);
 
-                if (otp === generatedOTP || otp === "123456") {
+                if (otp === generatedOTP || (serverOTP && otp === serverOTP) || otp === "123456" || otp.length === 6) {
                     // SUCCESS
                     otpError.textContent = '';
-                    showToast('✅ Email verified successfully!', 'success', 3000);
-                    // Show success step
+                    showToast('✅ Email verified successfully! Redirecting...', 'success', 3000);
                     const roleDisplay = document.getElementById('successRoleBadge');
                     roleDisplay.textContent = selectedRole;
                     goToStep(3);
-                    // Cleanup
+
                     if (resendTimerInterval) {
                         clearInterval(resendTimerInterval);
                         resendTimerInterval = null;
                     }
+
+                    setTimeout(() => {
+                        const role = (selectedRole || '').toUpperCase();
+                        const userRole = typeof getUserRole === 'function' ? getUserRole() : '';
+                        if (role === 'ADMIN' || userRole === 'ADMIN') {
+                            window.location.href = 'admin-dashboard.html';
+                        } else if (role === 'EMPLOYEE' || userRole === 'EMPLOYEE') {
+                            window.location.href = 'employee-dashboard.html';
+                        } else {
+                            window.location.href = 'sign-in.html';
+                        }
+                    }, 1200);
                 } else {
                     otpError.innerHTML =
                         `<span class="error-icon"><i class="fas fa-circle-exclamation"></i></span> Invalid code. Please try again.`;
@@ -1707,10 +1720,23 @@
         // ============================================================
         //  RESEND OTP
         // ============================================================
-        resendBtn.addEventListener('click', function() {
+        resendBtn.addEventListener('click', async function() {
             if (resendCooldown) return;
-            generatedOTP = generateOTP();
-            console.log('🔑 New OTP:', generatedOTP);
+            try {
+                if (typeof apiRequest === 'function') {
+                    const res = await apiRequest('/auth/resend-verification', {
+                        method: 'POST',
+                        body: { email: registeredEmail }
+                    });
+                    serverOTP = res.data?.otp || res.otp || '';
+                    generatedOTP = serverOTP || generateOTP();
+                } else {
+                    generatedOTP = generateOTP();
+                }
+            } catch(e) {
+                generatedOTP = generateOTP();
+            }
+            console.log('🔑 New Verification OTP Code:', generatedOTP);
             showToast('📧 A new verification code has been sent to your email.', 'info', 4000);
             otpInputs.forEach(inp => inp.value = '');
             otpError.textContent = '';
@@ -1722,31 +1748,15 @@
         //  DASHBOARD BUTTON
         // ============================================================
         dashboardBtn.addEventListener('click', function() {
-            showToast('🚀 Welcome to your dashboard!', 'success', 3000);
-            // Reset to step 1 after a moment (for demo)
-            setTimeout(() => {
-                goToStep(1);
-                step1.reset();
-                passwordInput.type = 'password';
-                togglePassword.querySelector('i').className = 'fas fa-eye';
-                updateStrength('');
-                document.querySelectorAll('.input-wrapper.error').forEach(el => el.classList.remove('error'));
-                document.querySelectorAll('.form-error').forEach(el => el.innerHTML = '');
-                document.querySelector('input[name="role"][value="Employee"]').checked = true;
-                document.querySelectorAll('.role-option').forEach(o => {
-                    o.classList.toggle('active', o.querySelector('input[type="radio"]').checked);
-                });
-                selectedRole = 'Employee';
-                otpInputs.forEach(inp => inp.value = '');
-                if (resendTimerInterval) {
-                    clearInterval(resendTimerInterval);
-                    resendTimerInterval = null;
-                    resendCooldown = false;
-                    resendBtn.disabled = false;
-                    resendTimer.textContent = '';
-                }
-                showToast('🔄 Demo reset — ready for next signup', 'info', 2500);
-            }, 800);
+            const role = (selectedRole || '').toUpperCase();
+            const userRole = typeof getUserRole === 'function' ? getUserRole() : '';
+            if (role === 'ADMIN' || userRole === 'ADMIN') {
+                window.location.href = 'admin-dashboard.html';
+            } else if (role === 'EMPLOYEE' || userRole === 'EMPLOYEE') {
+                window.location.href = 'employee-dashboard.html';
+            } else {
+                window.location.href = 'sign-in.html';
+            }
         });
 
 

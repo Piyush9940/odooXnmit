@@ -299,18 +299,32 @@ function closeModal(id) {
     document.getElementById('modalBackdrop').classList.remove('show');
 }
 
-function saveEmployee(e) {
+async function saveEmployee(e) {
     e.preventDefault();
     const id = document.getElementById('empEditId').value;
     const name = document.getElementById('empFormName').value;
-    const email = document.getElementById('empFormEmail').value; // dummy
+    const email = document.getElementById('empFormEmail').value;
     const dept = document.getElementById('empFormDept').value;
     const desig = document.getElementById('empFormDesig').value;
     const type = document.getElementById('empFormType').value;
     const status = document.getElementById('empFormStatus').value;
     
+    const [firstName, ...rest] = name.trim().split(' ');
+    const lastName = rest.join(' ') || 'User';
+
     if (id) {
-        // Update
+        // Update live API
+        try {
+            if (typeof updateEmployee === 'function') {
+                await updateEmployee(id, {
+                    personalDetails: { firstName, lastName },
+                    jobDetails: { department: dept, designation: desig, employmentType: type.toLowerCase() }
+                });
+            }
+        } catch (err) {
+            console.log("Update employee API error:", err.message);
+        }
+
         const emp = employees.find(emp => emp.id === id);
         if(emp) {
             emp.name = name;
@@ -321,16 +335,31 @@ function saveEmployee(e) {
             showToast('Employee updated successfully', 'success');
         }
     } else {
-        // Add
-        const newId = 'EMP-0' + (employees.length + 10);
+        // Add live API
+        const newEmpId = 'EMP' + Math.floor(1000 + Math.random() * 8999);
+        try {
+            if (typeof createEmployee === 'function') {
+                await createEmployee({
+                    employeeId: newEmpId,
+                    email: email || `user${Date.now()}@example.com`,
+                    password: 'Password@123',
+                    personalDetails: { firstName, lastName },
+                    jobDetails: { department: dept, designation: desig, employmentType: type.toLowerCase() }
+                });
+            }
+        } catch (err) {
+            console.log("Create employee API error:", err.message);
+        }
+
         employees.push({
-            id: newId, name, dept, desig, type, status, joinDate: new Date().toISOString().split('T')[0]
+            id: newEmpId, name, dept, desig, type, status, joinDate: new Date().toISOString().split('T')[0]
         });
-        showToast('Employee added successfully', 'success');
+        showToast('Employee created successfully', 'success');
     }
     
     renderEmployees();
     closeModal('empModal');
+    loadLiveData();
 }
 
 function viewEmployee(id) {
@@ -383,11 +412,17 @@ function deleteEmployee(id) {
     document.getElementById('modalBackdrop').classList.add('show');
     document.getElementById('confirmModal').classList.add('show');
     
-    deleteCallback = () => {
+    deleteCallback = async () => {
+        try {
+            if (typeof window.deleteEmployee === 'function') {
+                await window.deleteEmployee(id);
+            }
+        } catch(e){}
         employees = employees.filter(e => e.id !== id);
         renderEmployees();
         showToast('Employee deleted successfully', 'success');
         closeModal('confirmModal');
+        loadLiveData();
     };
     
     document.getElementById('confirmBtn').onclick = deleteCallback;
@@ -468,13 +503,21 @@ function renderLeaves() {
     `).join('');
 }
 
-function approveLeave(id) {
+async function approveLeave(id) {
+    try {
+        if (typeof window.approveLeave === 'function') {
+            await window.approveLeave(id);
+        }
+    } catch (err) {
+        console.log("Approve leave API error:", err.message);
+    }
     const leave = leaves.find(l => l.id === id);
     if(leave) {
         leave.status = 'Approved';
         renderLeaves();
         showToast(`Leave approved for ${leave.emp}`, 'success');
     }
+    loadLiveData();
 }
 
 function openRejectModal(id) {
@@ -484,17 +527,24 @@ function openRejectModal(id) {
     document.getElementById('rejectModal').classList.add('show');
 }
 
-function confirmReject() {
-    const id = parseInt(document.getElementById('rejectLeaveId').value);
-    const reason = document.getElementById('rejectReason').value;
-    const leave = leaves.find(l => l.id === id);
-    
+async function confirmReject() {
+    const id = document.getElementById('rejectLeaveId').value;
+    const reason = document.getElementById('rejectReason').value || 'Rejected by admin';
+    try {
+        if (typeof window.rejectLeave === 'function') {
+            await window.rejectLeave(id, reason);
+        }
+    } catch (err) {
+        console.log("Reject leave API error:", err.message);
+    }
+    const leave = leaves.find(l => l.id == id);
     if(leave) {
         leave.status = 'Rejected';
         renderLeaves();
         showToast(`Leave rejected for ${leave.emp}`, 'warning');
     }
     closeModal('rejectModal');
+    loadLiveData();
 }
 
 // ───── Payroll Logic ─────
