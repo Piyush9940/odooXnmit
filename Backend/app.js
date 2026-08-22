@@ -19,20 +19,19 @@ const app = express();
 
 /*
 |--------------------------------------------------------------------------
-| Security Middleware
+| Security & CORS Middleware
 |--------------------------------------------------------------------------
 */
 
 app.use(
-    helmet()
+    helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" }
+    })
 );
 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL
-            ? process.env.CLIENT_URL.split(",")
-            : true,
-
+        origin: true,
         credentials: true
     })
 );
@@ -78,8 +77,7 @@ app.get(
         res.status(200).json({
             success: true,
             message: "Dayflow API is running",
-            environment:
-                process.env.NODE_ENV || "development"
+            environment: process.env.NODE_ENV || "development"
         });
     }
 );
