@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Dayflow · Home</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="home-page.css">
+</head>
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar-container">
+        <nav class="navbar">
+            <!-- Brand -->
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="brand-text">Dayflow</div>
+            </div>
+
+            <!-- Links (Centered perfectly with CSS Grid) -->
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="nav-actions">
+                <a href="sign-in.html" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+                <a href="sign-up.html" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Sign Up
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-badge">
+                <i class="fas fa-rocket"></i> Dayflow HRMS v1.0 is live
+            </div>
+            <h1 class="hero-title">
+                Every workday, <br/> <span class="gradient-text">perfectly aligned.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Experience the modern standard in HR management. Dayflow brings your attendance, leave requests, and payroll together into one beautiful, lightning-fast platform.
+            </p>
+            <div class="hero-actions">
+                <a href="sign-up.html" class="btn btn-primary btn-lg">
+                    Get Started Free <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="admin-dashboard.html" class="btn btn-outline btn-lg">
+                    View Live Demo
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section-header">
+            <div class="section-subtitle">Why Dayflow</div>
+            <h2 class="section-title">Everything you need to manage your team</h2>
+        </section>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                <h3 class="feature-title">Smart Attendance</h3>
+                <p class="feature-desc">Monitor check-ins, daily logs, and real-time status for your entire workforce in one unified dashboard view.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-umbrella-beach"></i></div>
+                <h3 class="feature-title">Leave Management</h3>
+                <p class="feature-desc">Employees can apply for leave instantly, while managers can approve or reject requests with a single click.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                <h3 class="feature-title">Payroll & Salary</h3>
+                <p class="feature-desc">Crystal clear visibility into salary structures, transparent payslips, and a complete history of payments.</p>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section id="features" class="section-header">
+            <div class="section-subtitle">Core Capabilities</div>
+            <h2 class="section-title">Built for modern HR teams</h2>
+        </section>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+                <h3 class="feature-title">Role-Based Access</h3>
+                <p class="feature-desc">Securely separate administrative controls from employee self-service portals with granular permission settings.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3 class="feature-title">Actionable Insights</h3>
+                <p class="feature-desc">Transform your raw attendance and payroll data into beautiful, easy-to-understand charts and reports.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3 class="feature-title">Real-Time Sync</h3>
+                <p class="feature-desc">Never wait for a page reload again. All data updates instantly across all connected administrative dashboards.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">
+            <i class="fas fa-layer-group" style="color: var(--primary);"></i> Dayflow Technologies
+        </div>
+        <div>
+            &copy; 2026 All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
