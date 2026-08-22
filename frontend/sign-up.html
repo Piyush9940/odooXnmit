@@ -1288,13 +1288,13 @@
         }
 
         function validateEmployeeId() {
-            const val = employeeIdInput.value.trim();
+            const val = employeeIdInput.value.trim().toUpperCase();
             if (!val) {
                 setFieldError(employeeIdInput, document.getElementById('employeeIdError'), 'Employee ID is required');
                 return false;
             }
-            if (val.length < 3) {
-                setFieldError(employeeIdInput, document.getElementById('employeeIdError'), 'At least 3 characters');
+            if (!/^EMP\d{3,}$/.test(val)) {
+                setFieldError(employeeIdInput, document.getElementById('employeeIdError'), 'Employee ID must follow format EMP001');
                 return false;
             }
             setFieldError(employeeIdInput, document.getElementById('employeeIdError'), '');
@@ -1592,8 +1592,7 @@
 
             try {
                 const regData = {
-                    name: registeredEmail.split('@')[0],
-                    employeeId: employeeIdInput.value.trim(),
+                    employeeId: employeeIdInput.value.trim().toUpperCase(),
                     email: registeredEmail,
                     password: passwordInput.value,
                     role: selectedRole.toLowerCase()
