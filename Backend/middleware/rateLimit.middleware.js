@@ -87,3 +87,5 @@ export const adminNotificationRateLimiter = createRateLimiter({
     max: 30,
     message: "Too many notification requests. Please try again later."
 });
+
+export default generalRateLimiter;

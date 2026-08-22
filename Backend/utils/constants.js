@@ -28,6 +28,12 @@ const ATTENDANCE_STATUS = Object.freeze({
     LEAVE: "leave"
 });
 
+const PAYROLL_STATUS = Object.freeze({
+    DRAFT: "draft",
+    PROCESSED: "processed",
+    PAID: "paid"
+});
+
 const DOCUMENT_TYPES = Object.freeze({
     OFFER_LETTER: "offer-letter",
     EXPERIENCE_LETTER: "experience-letter",
@@ -108,6 +114,7 @@ export {
     LEAVE_TYPES,
     LEAVE_STATUS,
     ATTENDANCE_STATUS,
+    PAYROLL_STATUS,
     DOCUMENT_TYPES,
     NOTIFICATION_TYPES,
     NOTIFICATION_RECIPIENT_TYPES,

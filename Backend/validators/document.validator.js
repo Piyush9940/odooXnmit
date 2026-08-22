@@ -230,8 +230,10 @@ const documentIdParamSchema = Joi.object({
 
 export {
     uploadDocumentSchema,
+    uploadDocumentSchema as uploadDocumentValidator,
     uploadOwnDocumentSchema,
     updateDocumentSchema,
     documentQuerySchema,
+    documentQuerySchema as documentQueryValidator,
     documentIdParamSchema
 };

@@ -14,6 +14,11 @@ import {
     successResponse
 } from "../utils/response.js";
 
+import {
+    generateAccessToken,
+    verifyToken
+} from "../utils/jwt.js";
+
 /*
 |--------------------------------------------------------------------------
 | Register
@@ -94,7 +99,7 @@ const verifyEmailController =
         try {
             const {
                 token
-            } = req.query;
+            } = req.body;
 
             const result =
                 await verifyEmail(
@@ -198,10 +203,10 @@ const resetPasswordController =
             } = req.body;
 
             const result =
-                await resetPassword(
+                await resetPassword({
                     token,
-                    password
-                );
+                    newPassword: password
+                });
 
             return successResponse(
                 res,
@@ -318,6 +323,28 @@ const logout = async (
     }
 };
 
+const refreshTokenController = async (req, res, next) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            const error = new Error("Refresh token is required");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        const payload = verifyToken(refreshToken);
+        const accessToken = generateAccessToken({
+            userId: payload.userId,
+            role: payload.role
+        });
+
+        return successResponse(res, 200, "Access token refreshed", { accessToken });
+    } catch (error) {
+        next(error);
+    }
+};
+
 /*
 |--------------------------------------------------------------------------
 | Export
@@ -326,12 +353,17 @@ const logout = async (
 
 export {
     register,
+    register as registerController,
     login,
+    login as loginController,
     verifyEmailController,
     resendVerification,
     forgotPasswordController,
     resetPasswordController,
     getMe,
+    getMe as getCurrentUserController,
     changePasswordController,
-    logout
+    logout,
+    logout as logoutController,
+    refreshTokenController
 };

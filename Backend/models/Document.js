@@ -82,8 +82,7 @@ const documentSchema = new mongoose.Schema(
             publicId: {
                 type: String,
                 required: [true, "Cloudinary public ID is required"],
-                trim: true,
-                index: true
+                trim: true
             },
 
             resourceType: {
@@ -130,13 +129,6 @@ documentSchema.index({
     employee: 1,
     documentType: 1,
     createdAt: -1
-});
-
-/*
- * Useful for Cloudinary file lookup/deletion.
- */
-documentSchema.index({
-    "cloudinary.publicId": 1
 });
 
 documentSchema.set("toJSON", {

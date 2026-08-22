@@ -10,10 +10,10 @@ import {
     deleteEmployeeController
 } from "../controllers/employee.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
-import roleMiddleware from "../middlewares/role.middleware.js";
-import validate from "../middlewares/validation.middleware.js";
-import uploadMiddleware from "../middlewares/upload.middleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
+import validate from "../middleware/validation.middleware.js";
+import uploadMiddleware from "../middleware/upload.middleware.js";
 
 import {
     createEmployeeValidator,

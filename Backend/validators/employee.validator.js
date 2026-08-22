@@ -268,6 +268,10 @@ const salaryStructureSchema = Joi.object({
 const createEmployeeSchema = Joi.object({
     employeeId,
 
+    email: Joi.string().email().lowercase().trim().required(),
+
+    password: Joi.string().min(8).max(128).required(),
+
     personalDetails:
         personalDetailsSchema.required(),
 
@@ -408,8 +412,11 @@ const employeeIdParamSchema = Joi.object({
 
 export {
     createEmployeeSchema,
+    createEmployeeSchema as createEmployeeValidator,
     updateOwnProfileSchema,
+    updateOwnProfileSchema as updateMyProfileValidator,
     updateEmployeeSchema,
+    updateEmployeeSchema as updateEmployeeValidator,
     employeeQuerySchema,
     employeeIdParamSchema
 };

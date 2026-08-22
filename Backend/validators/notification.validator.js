@@ -313,8 +313,11 @@ const notificationIdParamSchema = Joi.object({
 
 export {
     sendNotificationSchema,
+    sendNotificationSchema as sendNotificationValidator,
     systemNotificationSchema,
+    systemNotificationSchema as sendBulkNotificationValidator,
     markNotificationReadSchema,
     notificationQuerySchema,
+    notificationQuerySchema as notificationQueryValidator,
     notificationIdParamSchema
 };

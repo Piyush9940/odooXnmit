@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Employee Dashboard · Dayflow</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="employee-dashboard.css" />
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="brand-icon"><i class="fas fa-layer-group"></i></div>
+                <h2>Dayflow</h2>
+            </div>
+            <button class="mobile-close" id="mobileCloseBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-target="dashboard">
+                <i class="fas fa-home"></i> <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-target="profile">
+                <i class="fas fa-user-circle"></i> <span>My Profile</span>
+            </a>
+            <a href="#" class="nav-item" data-target="attendance">
+                <i class="fas fa-calendar-check"></i> <span>Attendance</span>
+            </a>
+            <a href="#" class="nav-item" data-target="leave">
+                <i class="fas fa-umbrella-beach"></i> <span>Leave</span>
+            </a>
+            <a href="#" class="nav-item" data-target="payroll">
+                <i class="fas fa-wallet"></i> <span>Payroll</span>
+            </a>
+            <a href="#" class="nav-item" data-target="notifications">
+                <i class="fas fa-bell"></i> <span>Notifications</span>
+                <span class="badge notification-badge" id="navNotifBadge">2</span>
+            </a>
+            <a href="#" class="nav-item" data-target="settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="employee-widget">
+                <img src="https://ui-avatars.com/api/?name=John+Doe&background=2563eb&color=fff" alt="Avatar" class="widget-avatar" id="widgetAvatar">
+                <div class="widget-info">
+                    <h4 id="widgetName">John Doe</h4>
+                    <p id="widgetId">EMP-001</p>
+                </div>
+                <button class="btn-logout" id="logoutBtn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="page-title-box">
+                    <h2 id="topbarTitle">Dashboard</h2>
+                    <p id="topbarDesc">Here's your work overview for today.</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                
+                <div class="current-date" id="currentDate">
+                    August 22, 2026
+                </div>
+
+                <div class="topbar-icon" id="topbarNotifBtn">
+                    <i class="far fa-bell"></i>
+                    <span class="indicator" id="topbarIndicator"></span>
+                </div>
+
+                <div class="topbar-profile">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=2563eb&color=fff" alt="Avatar">
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <main class="page-content">
+
+            <!-- ================= DASHBOARD SECTION ================= -->
+            <section class="page-section active" id="sec-dashboard">
+                <!-- Welcome Banner -->
+                <div class="welcome-card card">
+                    <div class="welcome-content">
+                        <h2>Good morning, <span id="welcomeName">John</span>!</h2>
+                        <p>Here's your work overview for today.</p>
+                        
+                        <div class="welcome-stats">
+                            <div class="w-stat">
+                                <span class="w-label">Today's Date</span>
+                                <span class="w-val" id="welcomeDate">22 Aug 2026</span>
+                            </div>
+                            <div class="w-stat">
+                                <span class="w-label">Status</span>
+                                <span class="w-val status-badge default" id="welcomeStatus">Not Checked In</span>
+                            </div>
+                            <div class="w-stat">
+                                <span class="w-label">Check-in Time</span>
+                                <span class="w-val" id="welcomeCheckIn">--:--</span>
+                            </div>
+                            <div class="w-stat">
+                                <span class="w-label">Check-out Time</span>
+                                <span class="w-val" id="welcomeCheckOut">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="welcome-action">
+                        <button class="btn btn-primary btn-lg" id="btnToggleAttendance">
+                            <i class="fas fa-fingerprint"></i> <span id="btnToggleAttendanceText">Check In</span>
+                        </button>
+                        <p class="help-text">Click to register your attendance</p>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-blue"><i class="fas fa-calendar-day"></i></div>
+                        <div class="kpi-info">
+                            <h3>Today's Attendance</h3>
+                            <h2 id="kpiTodayStatus">Not Marked</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-purple"><i class="fas fa-clock"></i></div>
+                        <div class="kpi-info">
+                            <h3>Working Hours (Month)</h3>
+                            <h2>142h 15m</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-green"><i class="fas fa-umbrella-beach"></i></div>
+                        <div class="kpi-info">
+                            <h3>Leave Balance</h3>
+                            <h2 id="kpiLeaveBalance">18 Days</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-orange"><i class="fas fa-hourglass-half"></i></div>
+                        <div class="kpi-info">
+                            <h3>Pending Leaves</h3>
+                            <h2 id="kpiPendingLeaves">1</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2col">
+                    <!-- Attendance Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Attendance Summary</h3>
+                            <select class="select-sm">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="attendanceChart" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Recent Attendance -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Attendance</h3>
+                            <a href="#" class="view-all" data-target="attendance">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" id="dashboardAttendanceTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MY PROFILE SECTION ================= -->
+            <section class="page-section" id="sec-profile">
+                <div class="profile-header card">
+                    <div class="profile-header-inner">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=2563eb&color=fff&size=120" alt="Avatar" class="profile-large-avatar">
+                        <div class="profile-title">
+                            <h2 id="profName">John Doe</h2>
+                            <p class="prof-designation" id="profDesignation">Software Engineer • Engineering</p>
+                            <p class="prof-location"><i class="fas fa-map-marker-alt"></i> <span id="profLocation">Bengaluru</span></p>
+                        </div>
+                        <button class="btn btn-primary" id="btnEditProfile">
+                            <i class="fas fa-pen"></i> Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid-2col">
+                    <!-- Personal Info -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Personal Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="info-list">
+                                <li><span class="lbl">Full Name:</span> <span class="val" id="piName">John Doe</span></li>
+                                <li><span class="lbl">Email:</span> <span class="val" id="piEmail">john.doe@example.com</span></li>
+                                <li><span class="lbl">Phone:</span> <span class="val" id="piPhone">+91 9876543210</span></li>
+                                <li><span class="lbl">Date of Birth:</span> <span class="val" id="piDob">12 Oct 1995</span></li>
+                                <li><span class="lbl">Gender:</span> <span class="val" id="piGender">Male</span></li>
+                                <li><span class="lbl">Address:</span> <span class="val" id="piAddress">123 Tech Park, Whitefield, Bengaluru</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Job Info -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Job Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="info-list">
+                                <li><span class="lbl">Employee ID:</span> <span class="val" id="jiId">EMP-001</span></li>
+                                <li><span class="lbl">Department:</span> <span class="val" id="jiDept">Engineering</span></li>
+                                <li><span class="lbl">Designation:</span> <span class="val" id="jiDesig">Software Engineer</span></li>
+                                <li><span class="lbl">Employment Type:</span> <span class="val" id="jiType">Full Time</span></li>
+                                <li><span class="lbl">Joining Date:</span> <span class="val" id="jiJoin">15 Jun 2025</span></li>
+                                <li><span class="lbl">Reporting Manager:</span> <span class="val" id="jiManager">Priya Sharma</span></li>
+                                <li><span class="lbl">Status:</span> <span class="val status-badge success">Active</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Emergency Contact</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="info-list">
+                                <li><span class="lbl">Contact Name:</span> <span class="val">Jane Doe</span></li>
+                                <li><span class="lbl">Relationship:</span> <span class="val">Spouse</span></li>
+                                <li><span class="lbl">Phone:</span> <span class="val">+91 9123456780</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Documents</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Document Name</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="documentsTableBody">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= ATTENDANCE SECTION ================= -->
+            <section class="page-section" id="sec-attendance">
+                <!-- Stats Row -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(5, 1fr);">
+                    <div class="kpi-card card">
+                        <div class="kpi-info">
+                            <p class="text-sm">Attendance</p>
+                            <h2>91.6%</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-info">
+                            <p class="text-sm text-green">Present</p>
+                            <h2>22</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-info">
+                            <p class="text-sm text-red">Absent</p>
+                            <h2>1</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-info">
+                            <p class="text-sm text-purple">Leave</p>
+                            <h2>2</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-info">
+                            <p class="text-sm text-orange">Half Day</p>
+                            <h2>0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header flex-between">
+                        <h3>Attendance Log</h3>
+                        <div class="filters">
+                            <input type="month" class="input-form" value="2026-08">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="fullAttendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Working Hours</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rendered via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= LEAVE SECTION ================= -->
+            <section class="page-section" id="sec-leave">
+                <!-- Leave Balances -->
+                <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-blue"><i class="fas fa-briefcase"></i></div>
+                        <div class="kpi-info">
+                            <h3>Paid Leave</h3>
+                            <h2 id="balPaid">18 Days</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-orange"><i class="fas fa-notes-medical"></i></div>
+                        <div class="kpi-info">
+                            <h3>Sick Leave</h3>
+                            <h2 id="balSick">6 Days</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-purple"><i class="fas fa-plane-slash"></i></div>
+                        <div class="kpi-info">
+                            <h3>Unpaid Leave</h3>
+                            <h2 id="balUnpaid">0 Days</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2col mt-4">
+                    <!-- Apply Leave Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Apply for Leave</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="applyLeaveForm">
+                                <div class="form-group">
+                                    <label>Leave Type</label>
+                                    <select class="input-form" id="leaveType" required>
+                                        <option value="Paid Leave">Paid Leave</option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Unpaid Leave">Unpaid Leave</option>
+                                    </select>
+                                </div>
+                                <div class="grid-2col-sm">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input type="date" class="input-form" id="leaveStart" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <input type="date" class="input-form" id="leaveEnd" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Duration (Calculated)</label>
+                                    <input type="text" class="input-form bg-light" id="leaveDuration" value="0 Days" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Reason</label>
+                                    <textarea class="input-form" id="leaveReason" rows="3" placeholder="Briefly explain your reason..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Leave History -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Leave Request History</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" id="leaveHistoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>Leave Type</th>
+                                        <th>Date Range</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAYROLL SECTION ================= -->
+            <section class="page-section" id="sec-payroll">
+                <!-- Payroll Overview -->
+                <div class="kpi-grid">
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-green"><i class="fas fa-rupee-sign"></i></div>
+                        <div class="kpi-info">
+                            <h3>Gross Salary</h3>
+                            <h2>₹75,000</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-red"><i class="fas fa-minus-circle"></i></div>
+                        <div class="kpi-info">
+                            <h3>Deductions</h3>
+                            <h2>₹8,500</h2>
+                        </div>
+                    </div>
+                    <div class="kpi-card card">
+                        <div class="kpi-icon icon-primary"><i class="fas fa-wallet"></i></div>
+                        <div class="kpi-info">
+                            <h3>Net Salary</h3>
+                            <h2>₹66,500</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2col mt-4">
+                    <!-- Current Salary Structure -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Current Salary Structure</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table">
+                                <tbody>
+                                    <tr class="bg-light-blue"><td colspan="2"><strong>Earnings</strong></td></tr>
+                                    <tr><td>Basic Salary</td><td class="text-right">₹37,500</td></tr>
+                                    <tr><td>HRA</td><td class="text-right">₹15,000</td></tr>
+                                    <tr><td>Transport Allowance</td><td class="text-right">₹4,000</td></tr>
+                                    <tr><td>Special Allowance</td><td class="text-right">₹18,500</td></tr>
+                                    <tr class="bg-light-red"><td colspan="2"><strong>Deductions</strong></td></tr>
+                                    <tr><td>PF (Provident Fund)</td><td class="text-right">₹4,500</td></tr>
+                                    <tr><td>Professional Tax</td><td class="text-right">₹200</td></tr>
+                                    <tr><td>Income Tax (TDS)</td><td class="text-right">₹3,800</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Payroll History -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Payslip History</h3>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" id="payrollHistoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Gross</th>
+                                        <th>Net</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= NOTIFICATIONS SECTION ================= -->
+            <section class="page-section" id="sec-notifications">
+                <div class="card">
+                    <div class="card-header flex-between">
+                        <h3>All Notifications</h3>
+                        <button class="btn btn-outline btn-sm" id="btnMarkAllRead">Mark All as Read</button>
+                    </div>
+                    <div class="notification-list" id="fullNotificationList">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SETTINGS SECTION ================= -->
+            <section class="page-section" id="sec-settings">
+                <div class="grid-2col">
+                    <!-- Account Settings -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Account Security</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="settingsAccountForm">
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" class="input-form" placeholder="••••••••">
+                                </div>
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" class="input-form" placeholder="••••••••">
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" class="input-form" placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Notification Preferences</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="settingsPrefsForm">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Email Notifications</h4>
+                                        <p>Receive daily summaries via email.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Attendance Reminders</h4>
+                                        <p>Alert me to check-in/out during work hours.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Leave Notifications</h4>
+                                        <p>Alert me when my leave request status changes.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Payroll Notifications</h4>
+                                        <p>Alert me when a new payslip is generated.</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+    
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal card">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="grid-2col-sm">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="input-form" id="epEmail" value="john.doe@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" class="input-form" id="epPhone" value="+91 9876543210">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" class="input-form" id="epAddress" value="123 Tech Park, Whitefield, Bengaluru">
+                    </div>
+                    <p class="text-sm text-muted mt-2"><i class="fas fa-info-circle"></i> To change restricted fields (Name, Designation, Department), please contact HR.</p>
+                    <div class="modal-footer mt-4">
+                        <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payslip Modal -->
+    <div class="modal-overlay" id="payslipModal">
+        <div class="modal card">
+            <div class="modal-header">
+                <h3 id="payslipTitle">Payslip</h3>
+                <button class="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="payslip-preview">
+                    <div class="payslip-header text-center mb-4">
+                        <h2>Dayflow Technologies</h2>
+                        <p id="payslipSubtitle">Payslip for July 2026</p>
+                    </div>
+                    <div class="grid-2col-sm mb-4">
+                        <div>
+                            <p class="text-sm text-muted">Employee Name</p>
+                            <strong>John Doe</strong>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted">Employee ID</p>
+                            <strong>EMP-001</strong>
+                        </div>
+                    </div>
+                    <table class="table mb-4">
+                        <tr class="bg-light-blue"><th>Earnings</th><th class="text-right">Amount</th></tr>
+                        <tr><td>Gross Earnings</td><td class="text-right" id="psGross">₹75,000</td></tr>
+                        <tr class="bg-light-red"><th>Deductions</th><th class="text-right">Amount</th></tr>
+                        <tr><td>Total Deductions</td><td class="text-right" id="psDeductions">₹8,500</td></tr>
+                        <tr class="bg-light"><th>Net Pay</th><th class="text-right"><strong id="psNet">₹66,500</strong></th></tr>
+                    </table>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary" onclick="alert('Downloading PDF...')"><i class="fas fa-download"></i> Download PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- App Logic -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/employee.js"></script>
+    <script src="js/attendance.js"></script>
+    <script src="js/leave.js"></script>
+    <script src="js/payroll.js"></script>
+    <script src="js/document.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="employee-dashboard.js"></script>
+</body>
+</html>

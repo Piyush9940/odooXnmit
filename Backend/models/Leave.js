@@ -106,70 +106,46 @@ const leaveSchema = new mongoose.Schema(
 /*
  * Validate leave dates and calculate total days.
  */
-leaveSchema.pre("validate", function (next) {
-    try {
-        if (!this.startDate || !this.endDate) {
-            return next();
-        }
-
-        if (this.endDate < this.startDate) {
-            return next(
-                new Error(
-                    "End date cannot be before start date"
-                )
-            );
-        }
-
-        const start = new Date(this.startDate);
-        const end = new Date(this.endDate);
-
-        start.setHours(0, 0, 0, 0);
-        end.setHours(0, 0, 0, 0);
-
-        const difference =
-            end.getTime() - start.getTime();
-
-        this.totalDays =
-            Math.floor(
-                difference /
-                    (1000 * 60 * 60 * 24)
-            ) + 1;
-
-        next();
-    } catch (error) {
-        next(error);
+leaveSchema.pre("validate", function () {
+    if (!this.startDate || !this.endDate) {
+        return;
     }
+
+    if (this.endDate < this.startDate) {
+        throw new Error("End date cannot be before start date");
+    }
+
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    const difference = end.getTime() - start.getTime();
+
+    this.totalDays = Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
 });
 
 /*
  * Automatically record who reviewed the request
- * and when the status changes to approved/rejected.
+ * and when it was reviewed.
  */
-leaveSchema.pre("save", function (next) {
-    try {
+leaveSchema.pre("save", function () {
+    if (
+        this.isModified("status") &&
+        (this.status === "APPROVED" ||
+            this.status === "REJECTED")
+    ) {
         if (
-            this.isModified("status") &&
-            (
-                this.status === LEAVE_STATUS.APPROVED ||
-                this.status === LEAVE_STATUS.REJECTED
-            )
+            !this.reviewedBy &&
+            this._actionBy
         ) {
-            if (!this.reviewedBy) {
-                return next(
-                    new Error(
-                        "Reviewer is required when approving or rejecting leave"
-                    )
-                );
-            }
-
-            if (!this.reviewedAt) {
-                this.reviewedAt = new Date();
-            }
+            this.reviewedBy = this._actionBy;
         }
 
-        next();
-    } catch (error) {
-        next(error);
+        if (!this.reviewedAt) {
+            this.reviewedAt = new Date();
+        }
     }
 });
 

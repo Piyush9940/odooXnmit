@@ -21,6 +21,10 @@ const generateToken = (bytes = 32) => {
  *
  * Only the hashed token should be stored in MongoDB.
  */
+const generateSecureToken = (bytes = 32) => {
+    return generateToken(bytes);
+};
+
 const hashToken = (token) => {
     if (!token || typeof token !== "string") {
         throw new Error("Token is required for hashing");
@@ -50,6 +54,7 @@ const generateTokenPair = (bytes = 32) => {
 
 export {
     generateToken,
+    generateSecureToken,
     hashToken,
     generateTokenPair
 };

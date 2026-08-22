@@ -98,33 +98,23 @@ attendanceSchema.index(
 /*
  * Calculate total working hours before saving.
  */
-attendanceSchema.pre("save", function (next) {
-    try {
-        if (this.checkIn && this.checkOut) {
-            const difference =
-                this.checkOut.getTime() -
-                this.checkIn.getTime();
+attendanceSchema.pre("save", function () {
+    if (this.checkIn && this.checkOut) {
+        const difference =
+            this.checkOut.getTime() -
+            this.checkIn.getTime();
 
-            if (difference < 0) {
-                return next(
-                    new Error(
-                        "Check-out time cannot be before check-in time"
-                    )
-                );
-            }
-
-            this.totalWorkingHours =
-                Number(
-                    (
-                        difference /
-                        (1000 * 60 * 60)
-                    ).toFixed(2)
-                );
+        if (difference < 0) {
+            throw new Error("Check-out time cannot be before check-in time");
         }
 
-        next();
-    } catch (error) {
-        next(error);
+        this.totalWorkingHours =
+            Number(
+                (
+                    difference /
+                    (1000 * 60 * 60)
+                ).toFixed(2)
+            );
     }
 });
 

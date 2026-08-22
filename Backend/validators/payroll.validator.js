@@ -355,10 +355,13 @@ const salarySlipSchema = Joi.object({
 
 export {
     createPayrollSchema,
+    createPayrollSchema as createPayrollValidator,
     updatePayrollSchema,
+    updatePayrollSchema as updatePayrollValidator,
     processPayrollSchema,
     markPayrollPaidSchema,
     payrollQuerySchema,
+    payrollQuerySchema as payrollQueryValidator,
     payrollIdParamSchema,
     salarySlipSchema
 };

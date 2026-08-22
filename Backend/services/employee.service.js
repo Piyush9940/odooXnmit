@@ -126,20 +126,13 @@ const getAllEmployees = async ({
                 employeeId:
                     searchRegex
             },
-            {
-                firstName:
-                    searchRegex
-            },
-            {
-                lastName:
-                    searchRegex
-            }
+            { "personalDetails.firstName": searchRegex },
+            { "personalDetails.lastName": searchRegex }
         ];
     }
 
     if (department) {
-        filter.department =
-            department.trim();
+        filter["jobDetails.department"] = department.trim();
     }
 
     if (status) {
@@ -203,16 +196,8 @@ const createEmployee = async ({
     employeeId,
     email,
     password,
-    firstName,
-    lastName,
-    phone,
-    address,
-    dateOfBirth,
-    gender,
-    department,
-    designation,
-    joiningDate,
-    employmentType,
+    personalDetails,
+    jobDetails,
     salaryStructure
 }) => {
     const normalizedEmployeeId =
@@ -292,25 +277,9 @@ const createEmployee = async ({
                 employeeId:
                     normalizedEmployeeId,
 
-                firstName,
+                personalDetails,
 
-                lastName,
-
-                phone,
-
-                address,
-
-                dateOfBirth,
-
-                gender,
-
-                department,
-
-                designation,
-
-                joiningDate,
-
-                employmentType,
+                jobDetails,
 
                 salaryStructure
             });
@@ -789,11 +758,13 @@ const deleteEmployee = async (
 export {
     getEmployeeById,
     getEmployeeByUserId,
+    getEmployeeByUserId as getMyProfile,
     getAllEmployees,
 
     createEmployee,
     updateEmployee,
     updateOwnProfile,
+    updateOwnProfile as updateMyProfile,
 
     uploadEmployeeProfilePicture,
     uploadEmployeeProfilePictureByAdmin,

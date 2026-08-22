@@ -98,6 +98,38 @@ const errorMiddleware = (err, req, res, next) => {
         });
     }
 
+    if (err.message && err.message.toLowerCase().includes("not found")) {
+        return res.status(404).json({
+            success: false,
+            message: err.message,
+            data: null,
+            error: null
+        });
+    }
+
+    const clientErrorMessages = [
+        "Email is already registered",
+        "Employee ID is already registered",
+        "Invalid email or password",
+        "Invalid or expired verification token"
+    ];
+
+    if (clientErrorMessages.includes(err.message)) {
+        const statusCode = err.message === "Email is already registered" ||
+            err.message === "Employee ID is already registered"
+            ? 409
+            : err.message === "Invalid email or password"
+                ? 401
+                : 400;
+
+        return res.status(statusCode).json({
+            success: false,
+            message: err.message,
+            data: null,
+            error: null
+        });
+    }
+
     // Default Error
     return res.status(500).json({
         success: false,

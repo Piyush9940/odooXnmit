@@ -176,63 +176,45 @@ payrollSchema.index({
     payrollMonth: 1
 });
 
-payrollSchema.pre("save", function (next) {
-    try {
-        const {
-            basicSalary = 0,
-            allowances = 0,
-            deductions = 0
-        } = this.salaryStructure;
+payrollSchema.pre("save", function () {
+    const {
+        basicSalary = 0,
+        allowances = 0,
+        deductions = 0
+    } = this.salaryStructure;
 
-        const grossSalary =
-            basicSalary + allowances;
+    const grossSalary =
+        basicSalary + allowances;
 
-        const netSalary =
-            grossSalary - deductions;
+    const netSalary =
+        grossSalary - deductions;
 
-        if (netSalary < 0) {
-            return next(
-                new Error(
-                    "Net salary cannot be negative"
-                )
-            );
+    if (netSalary < 0) {
+        throw new Error("Net salary cannot be negative");
+    }
+
+    this.salaryStructure.grossSalary =
+        Number(grossSalary.toFixed(2));
+
+    this.salaryStructure.netSalary =
+        Number(netSalary.toFixed(2));
+
+    if (
+        this.isModified("status") &&
+        this.status === "processed"
+    ) {
+        if (!this.processedAt) {
+            this.processedAt = new Date();
         }
+    }
 
-        this.salaryStructure.grossSalary =
-            Number(grossSalary.toFixed(2));
-
-        this.salaryStructure.netSalary =
-            Number(netSalary.toFixed(2));
-
-        if (
-            this.isModified("status") &&
-            this.status === "processed"
-        ) {
-            if (!this.processedBy) {
-                return next(
-                    new Error(
-                        "processedBy is required when payroll is processed"
-                    )
-                );
-            }
-
-            if (!this.processedAt) {
-                this.processedAt = new Date();
-            }
+    if (
+        this.isModified("status") &&
+        this.status === "paid"
+    ) {
+        if (!this.paidAt) {
+            this.paidAt = new Date();
         }
-
-        if (
-            this.isModified("status") &&
-            this.status === "paid"
-        ) {
-            if (!this.paidAt) {
-                this.paidAt = new Date();
-            }
-        }
-
-        next();
-    } catch (error) {
-        next(error);
     }
 });
 

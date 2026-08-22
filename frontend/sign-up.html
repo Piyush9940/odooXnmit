@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up · Employee Portal</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --primary-bg: #eef2ff;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --radius: 16px;
+            --shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.25);
+            --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #f0f4ff 0%, #e8edf9 100%);
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background blobs */
+        .bg-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+            animation: blobFloat 20s ease-in-out infinite alternate;
+        }
+        .bg-blob--1 {
+            width: 500px;
+            height: 500px;
+            background: #818cf8;
+            top: -150px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        .bg-blob--2 {
+            width: 400px;
+            height: 400px;
+            background: #a78bfa;
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -7s;
+        }
+        .bg-blob--3 {
+            width: 300px;
+            height: 300px;
+            background: #60a5fa;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+            opacity: 0.15;
+        }
+
+        @keyframes blobFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -40px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.9);
+            }
+            100% {
+                transform: translate(10px, -10px) scale(1.05);
+            }
+        }
+
+        /* ===== CARD CONTAINER ===== */
+        .signup-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 40px 36px 36px;
+            transition: transform 0.3s ease;
+        }
+
+        .signup-container:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ===== HEADER ===== */
+        .signup-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .signup-header .logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            font-size: 26px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%,
+            100% {
+                box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(79, 70, 229, 0.55);
+            }
+        }
+
+        .signup-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            letter-spacing: -0.5px;
+        }
+
+        .signup-header p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        /* ===== STEPS INDICATOR ===== */
+        .steps-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .step-dot.active {
+            background: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+            transform: scale(1.2);
+        }
+
+        .step-dot.done {
+            background: var(--success);
+        }
+
+        .step-line {
+            width: 32px;
+            height: 2px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .step-line.done {
+            background: var(--success);
+        }
+
+        /* ===== FORM STEPS ===== */
+        .form-step {
+            display: none;
+            animation: fadeSlideUp 0.5s ease forwards;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== FORM GROUPS ===== */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .input-wrapper .input-icon {
+            padding: 0 0 0 14px;
+            color: var(--gray-400);
+            font-size: 15px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: var(--primary);
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            padding: 14px 14px 14px 10px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--gray-800);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--gray-400);
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .input-wrapper select {
+            appearance: none;
+            cursor: pointer;
+            padding-right: 40px;
+        }
+
+        .input-wrapper select option {
+            color: var(--gray-800);
+        }
+
+        .input-wrapper .toggle-password {
+            padding: 0 14px 0 0;
+            color: var(--gray-400);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--gray-600);
+        }
+
+        /* ===== ROLE SELECTOR ===== */
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .role-option {
+            position: relative;
+            padding: 14px 12px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .role-option:hover {
+            border-color: var(--gray-300);
+            background: #fff;
+        }
+
+        .role-option .role-icon {
+            font-size: 22px;
+            color: var(--gray-400);
+            transition: var(--transition);
+        }
+
+        .role-option .role-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-600);
+            transition: var(--transition);
+        }
+
+        .role-option .role-desc {
+            font-size: 11px;
+            color: var(--gray-400);
+            transition: var(--transition);
+        }
+
+        .role-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .role-option.active {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+        }
+
+        .role-option.active .role-icon {
+            color: var(--primary);
+        }
+
+        .role-option.active .role-label {
+            color: var(--primary-dark);
+        }
+
+        .role-option.active .role-desc {
+            color: var(--primary-light);
+        }
+
+        /* ===== PASSWORD STRENGTH ===== */
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            display: flex;
+            gap: 4px;
+            height: 4px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--gray-200);
+        }
+
+        .strength-bar .segment {
+            flex: 1;
+            height: 100%;
+            border-radius: 4px;
+            background: var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .strength-bar .segment.filled.weak {
+            background: var(--danger);
+        }
+        .strength-bar .segment.filled.fair {
+            background: var(--warning);
+        }
+        .strength-bar .segment.filled.good {
+            background: #8b5cf6;
+        }
+        .strength-bar .segment.filled.strong {
+            background: var(--success);
+        }
+
+        .strength-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .strength-text .label {
+            font-weight: 500;
+        }
+
+        .strength-text .label.weak {
+            color: var(--danger);
+        }
+        .strength-text .label.fair {
+            color: var(--warning);
+        }
+        .strength-text .label.good {
+            color: #8b5cf6;
+        }
+        .strength-text .label.strong {
+            color: var(--success);
+        }
+
+        /* ===== PASSWORD RULES ===== */
+        .password-rules {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 16px;
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .password-rules .rule {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--gray-500);
+            transition: var(--transition);
+        }
+
+        .password-rules .rule .rule-icon {
+            font-size: 12px;
+            color: var(--gray-300);
+            transition: var(--transition);
+            width: 16px;
+            text-align: center;
+        }
+
+        .password-rules .rule.valid {
+            color: var(--success);
+        }
+
+        .password-rules .rule.valid .rule-icon {
+            color: var(--success);
+        }
+
+        /* ===== VERIFICATION ===== */
+        .verification-container {
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        .verification-container .verify-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            animation: envelopeBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes envelopeBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .verification-container h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .verification-container p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin: 6px 0 20px;
+            line-height: 1.5;
+        }
+
+        .verification-container .email-display {
+            display: inline-block;
+            padding: 4px 16px;
+            background: var(--primary-bg);
+            border-radius: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 16px 0 20px;
+        }
+
+        .otp-input-group input {
+            width: 52px;
+            height: 56px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: inherit;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .otp-input-group input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .otp-input-group input:valid {
+            border-color: var(--success);
+        }
+
+        .otp-input-group input::placeholder {
+            color: var(--gray-300);
+            font-weight: 400;
+            font-size: 16px;
+        }
+
+        .resend-link {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .resend-link button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            transition: var(--transition);
+            padding: 0 4px;
+        }
+
+        .resend-link button:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .resend-link button:disabled {
+            color: var(--gray-400);
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        /* ===== SUCCESS ===== */
+        .success-container {
+            text-align: center;
+            padding: 12px 0;
+        }
+
+        .success-container .success-icon {
+            font-size: 64px;
+            color: var(--success);
+            margin-bottom: 12px;
+            animation: successPop 0.8s ease forwards;
+        }
+
+        @keyframes successPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-container h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .success-container p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin: 6px 0 4px;
+            line-height: 1.6;
+        }
+
+        .success-container .role-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(79, 70, 229, 0.45);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.35);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(34, 197, 94, 0.45);
+        }
+
+        .btn .btn-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* ===== FOOTER ===== */
+        .signup-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .signup-footer a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .signup-footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ===== ERROR MESSAGE ===== */
+        .form-error {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--danger);
+            margin-top: 6px;
+            padding: 0 4px;
+            min-height: 20px;
+        }
+
+        .form-error .error-icon {
+            font-size: 14px;
+        }
+
+        .input-wrapper.error {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .input-wrapper.error:focus-within {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 520px) {
+            .signup-container {
+                padding: 28px 20px 24px;
+                border-radius: 12px;
+            }
+
+            .signup-header h1 {
+                font-size: 20px;
+            }
+
+            .role-selector {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .role-option {
+                padding: 12px 8px;
+            }
+
+            .role-option .role-icon {
+                font-size: 18px;
+            }
+
+            .role-option .role-label {
+                font-size: 13px;
+            }
+
+            .password-rules {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+
+            .otp-input-group input {
+                width: 44px;
+                height: 48px;
+                font-size: 18px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .steps-indicator {
+                gap: 4px;
+            }
+
+            .step-line {
+                width: 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .signup-container {
+                padding: 20px 14px 18px;
+            }
+
+            .role-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .otp-input-group input {
+                width: 38px;
+                height: 42px;
+                font-size: 16px;
+            }
+
+            .otp-input-group {
+                gap: 6px;
+            }
+        }
+
+        /* ===== UTILITY ===== */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Shake animation for errors */
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-8px);
+            }
+            40% {
+                transform: translateX(8px);
+            }
+            60% {
+                transform: translateX(-4px);
+            }
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            background: var(--gray-900);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.info {
+            background: var(--primary);
+        }
+
+        .toast .toast-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Blobs -->
+    <div class="bg-blob bg-blob--1"></div>
+    <div class="bg-blob bg-blob--2"></div>
+    <div class="bg-blob bg-blob--3"></div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="alert">
+        <span class="toast-icon"></span>
+        <span class="toast-message"></span>
+    </div>
+
+    <!-- ===== SIGNUP CONTAINER ===== -->
+    <div class="signup-container" role="main" aria-label="Sign up form">
+
+        <!-- Header -->
+        <div class="signup-header">
+            <div class="logo" aria-hidden="true">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1>Create Account</h1>
+            <p>Join the team · Get started in minutes</p>
+        </div>
+
+        <!-- Steps Indicator -->
+        <div class="steps-indicator" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+            <span class="step-dot active" data-step="1" aria-label="Step 1: Account details"></span>
+            <span class="step-line" data-step="1"></span>
+            <span class="step-dot" data-step="2" aria-label="Step 2: Verify email"></span>
+            <span class="step-line" data-step="2"></span>
+            <span class="step-dot" data-step="3" aria-label="Step 3: Complete"></span>
+        </div>
+
+        <!-- ===== STEP 1: ACCOUNT DETAILS ===== -->
+        <form id="step1" class="form-step active" novalidate autocomplete="off">
+            <!-- Employee ID -->
+            <div class="form-group">
+                <label for="employeeId">Employee ID <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-id-badge"></i></span>
+                    <input
+                    type="text"
+                    id="employeeId"
+                    placeholder="e.g. EMP-2025-001"
+                    required
+                    autocomplete="off"
+                    />
+                </div>
+                <div class="form-error" id="employeeIdError"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input
+                    type="email"
+                    id="email"
+                    placeholder="you@company.com"
+                    required
+                    autocomplete="email"
+                    />
+                </div>
+                <div class="form-error" id="emailError"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password">Password <span class="required">*</span></label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a strong password"
+                    required
+                    autocomplete="new-password"
+                    />
+                    <span class="toggle-password" id="togglePassword" role="button" tabindex="0" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                <div class="form-error" id="passwordError"></div>
+
+                <!-- Password Strength -->
+                <div class="password-strength" id="strengthContainer">
+                    <div class="strength-bar">
+                        <span class="segment" data-index="0"></span>
+                        <span class="segment" data-index="1"></span>
+                        <span class="segment" data-index="2"></span>
+                        <span class="segment" data-index="3"></span>
+                    </div>
+                    <div class="strength-text">
+                        <span class="label" id="strengthLabel">Enter a password</span>
+                        <span id="strengthCount">0 / 8+</span>
+                    </div>
+                </div>
+
+                <!-- Password Rules -->
+                <div class="password-rules" id="passwordRules">
+                    <span class="rule" data-rule="length">
+                        <span class="rule-icon"><i class="fas fa-circle"></i></span>
+                        8+ characters
+                    </span>
+                    <span class="rule" data-rule="uppercase">
+                        <span class="rule-icon"><i class="fas fa-circle"></i></span>
+                        Uppercase letter
+                    </span>
+                    <span class="rule" data-rule="lowercase">
+                        <span class="rule-icon"><i class="fas fa-circle"></i></span>
+                        Lowercase letter
+                    </span>
+                    <span class="rule" data-rule="number">
+                        <span class="rule-icon"><i class="fas fa-circle"></i></span>
+                        Number
+                    </span>
+                    <span class="rule" data-rule="special">
+                        <span class="rule-icon"><i class="fas fa-circle"></i></span>
+                        Special character
+                    </span>
+                </div>
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+                <label>Role <span class="required">*</span></label>
+                <div class="role-selector" role="radiogroup" aria-label="Select your role">
+                    <label class="role-option active" role="radio" aria-checked="true" tabindex="0">
+                        <input type="radio" name="role" value="Employee" checked />
+                        <span class="role-icon"><i class="fas fa-user-tie"></i></span>
+                        <span class="role-label">Employee</span>
+                        <span class="role-desc">Team member</span>
+                    </label>
+                    <label class="role-option" role="radio" aria-checked="false" tabindex="0">
+                        <input type="radio" name="role" value="HR" />
+                        <span class="role-icon"><i class="fas fa-user-cog"></i></span>
+                        <span class="role-label">HR</span>
+                        <span class="role-desc">Human Resources</span>
+                    </label>
+                </div>
+                <div class="form-error" id="roleError"></div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary" id="signupBtn">
+                <span class="btn-text">Create Account</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+
+            <div class="signup-footer">
+                Already have an account? <a href="#" onclick="window.location.href='sign-in.html'">Sign in</a>
+            </div>
+        </form>
+
+        <!-- ===== STEP 2: VERIFICATION ===== -->
+        <div id="step2" class="form-step">
+            <div class="verification-container">
+                <div class="verify-icon" aria-hidden="true">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h3>Verify Your Email</h3>
+                <p>We've sent a 6-digit code to</p>
+                <span class="email-display" id="verifyEmailDisplay">you@company.com</span>
+
+                <div class="otp-input-group" id="otpGroup" role="group" aria-label="Enter 6-digit verification code">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 1" />
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 2" />
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 3" />
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 4" />
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 5" />
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 6" />
+                </div>
+
+                <div class="form-error" id="otpError" style="justify-content:center; min-height:24px;"></div>
+
+                <div class="resend-link">
+                    Didn't receive the code?
+                    <button id="resendBtn" type="button">Resend</button>
+                    <span id="resendTimer" style="font-weight:500;color:var(--gray-400);"></span>
+                </div>
+
+                <div class="btn-group" style="margin-top:20px;">
+                    <button type="button" class="btn btn-secondary" id="backToStep1">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button type="button" class="btn btn-primary" id="verifyBtn">
+                        <span class="btn-text">Verify</span>
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== STEP 3: SUCCESS ===== -->
+        <div id="step3" class="form-step">
+            <div class="success-container">
+                <div class="success-icon" aria-hidden="true">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>You're All Set! 🎉</h3>
+                <p>Your account has been successfully created and verified.</p>
+                <p style="font-size:13px;color:var(--gray-400);margin-top:2px;">
+                    Welcome to the team!
+                </p>
+                <div class="role-badge" id="successRoleBadge">Employee</div>
+                <button type="button" class="btn btn-success" style="margin-top:24px;" id="dashboardBtn">
+                    <i class="fas fa-rocket"></i> Go to Dashboard
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const dots = document.querySelectorAll('.step-dot');
+        const lines = document.querySelectorAll('.step-line');
+
+        const employeeIdInput = document.getElementById('employeeId');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const signupBtn = document.getElementById('signupBtn');
+        const backToStep1 = document.getElementById('backToStep1');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const resendTimer = document.getElementById('resendTimer');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+
+        const verifyEmailDisplay = document.getElementById('verifyEmailDisplay');
+        const otpInputs = document.querySelectorAll('#otpGroup input');
+        const otpError = document.getElementById('otpError');
+
+        const strengthSegments = document.querySelectorAll('#strengthContainer .segment');
+        const strengthLabel = document.getElementById('strengthLabel');
+        const strengthCount = document.getElementById('strengthCount');
+        const rules = document.querySelectorAll('#passwordRules .rule');
+
+        const toast = document.getElementById('toast');
+        const toastMessage = toast.querySelector('.toast-message');
+        const toastIcon = toast.querySelector('.toast-icon');
+
+        let toastTimeout = null;
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let currentStep = 1;
+        let selectedRole = 'Employee';
+        let registeredEmail = '';
+        let isVerifying = false;
+        let resendCooldown = false;
+        let resendTimerInterval = null;
+        let generatedOTP = '';
+
+        // ============================================================
+        //  STEP MANAGEMENT
+        // ============================================================
+        function goToStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+
+            if (step === 1) step1.classList.add('active');
+            else if (step === 2) step2.classList.add('active');
+            else if (step === 3) step3.classList.add('active');
+
+            // Update dots & lines
+            dots.forEach((dot, i) => {
+                const idx = i + 1;
+                dot.classList.remove('active', 'done');
+                if (idx === step) dot.classList.add('active');
+                else if (idx < step) dot.classList.add('done');
+            });
+
+            lines.forEach((line, i) => {
+                const idx = i + 1;
+                line.classList.toggle('done', idx < step);
+            });
+
+            // Update progressbar
+            const progressbar = document.querySelector('.steps-indicator');
+            progressbar.setAttribute('aria-valuenow', step);
+
+            // Focus management
+            if (step === 1) {
+                setTimeout(() => employeeIdInput.focus(), 300);
+            } else if (step === 2) {
+                setTimeout(() => otpInputs[0].focus(), 400);
+            }
+        }
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(message, type = 'info', duration = 3500) {
+            if (toastTimeout) {
+                clearTimeout(toastTimeout);
+                toast.classList.remove('show');
+            }
+
+            toast.className = 'toast';
+            toast.classList.add(type);
+            toastMessage.textContent = message;
+
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                info: 'fas fa-info-circle'
+            };
+            toastIcon.className = 'toast-icon ' + (icons[type] || icons.info);
+
+            // Force reflow
+            void toast.offsetWidth;
+            toast.classList.add('show');
+
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+                toastTimeout = null;
+            }, duration);
+        }
+
+        // ============================================================
+        //  VALIDATION HELPERS
+        // ============================================================
+        function setFieldError(input, errorEl, message) {
+            const wrapper = input.closest('.input-wrapper');
+            if (message) {
+                wrapper?.classList.add('error');
+                errorEl.innerHTML = `<span class="error-icon"><i class="fas fa-circle-exclamation"></i></span> ${message}`;
+            } else {
+                wrapper?.classList.remove('error');
+                errorEl.innerHTML = '';
+            }
+        }
+
+        function validateEmployeeId() {
+            const val = employeeIdInput.value.trim();
+            if (!val) {
+                setFieldError(employeeIdInput, document.getElementById('employeeIdError'), 'Employee ID is required');
+                return false;
+            }
+            if (val.length < 3) {
+                setFieldError(employeeIdInput, document.getElementById('employeeIdError'), 'At least 3 characters');
+                return false;
+            }
+            setFieldError(employeeIdInput, document.getElementById('employeeIdError'), '');
+            return true;
+        }
+
+        function validateEmail() {
+            const val = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!val) {
+                setFieldError(emailInput, document.getElementById('emailError'), 'Email is required');
+                return false;
+            }
+            if (!emailRegex.test(val)) {
+                setFieldError(emailInput, document.getElementById('emailError'), 'Please enter a valid email address');
+                return false;
+            }
+            setFieldError(emailInput, document.getElementById('emailError'), '');
+            return true;
+        }
+
+        function validatePassword() {
+            const val = passwordInput.value;
+            if (!val) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'Password is required');
+                return false;
+            }
+            if (val.length < 8) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'At least 8 characters');
+                return false;
+            }
+            if (!/[A-Z]/.test(val)) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'Needs an uppercase letter');
+                return false;
+            }
+            if (!/[a-z]/.test(val)) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'Needs a lowercase letter');
+                return false;
+            }
+            if (!/[0-9]/.test(val)) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'Needs a number');
+                return false;
+            }
+            if (!/[^A-Za-z0-9]/.test(val)) {
+                setFieldError(passwordInput, document.getElementById('passwordError'), 'Needs a special character');
+                return false;
+            }
+            setFieldError(passwordInput, document.getElementById('passwordError'), '');
+            return true;
+        }
+
+        function validateRole() {
+            const selected = document.querySelector('input[name="role"]:checked');
+            if (!selected) {
+                document.getElementById('roleError').innerHTML =
+                    `<span class="error-icon"><i class="fas fa-circle-exclamation"></i></span> Please select a role`;
+                return false;
+            }
+            document.getElementById('roleError').innerHTML = '';
+            return true;
+        }
+
+        // ============================================================
+        //  PASSWORD STRENGTH & RULES
+        // ============================================================
+        function checkPasswordRules(password) {
+            const checks = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[^A-Za-z0-9]/.test(password),
+            };
+
+            rules.forEach(rule => {
+                const key = rule.dataset.rule;
+                const valid = checks[key] || false;
+                rule.classList.toggle('valid', valid);
+                const icon = rule.querySelector('.rule-icon i');
+                if (icon) {
+                    icon.className = valid ? 'fas fa-check-circle' : 'fas fa-circle';
+                }
+            });
+
+            return checks;
+        }
+
+        function updateStrength(password) {
+            const checks = checkPasswordRules(password);
+            const score = Object.values(checks).filter(Boolean).length;
+
+            // Update segments
+            const levels = ['weak', 'fair', 'good', 'strong'];
+            const levelMap = {
+                0: 'weak',
+                1: 'weak',
+                2: 'fair',
+                3: 'good',
+                4: 'good',
+                5: 'strong'
+            };
+            const level = levelMap[score] || 'weak';
+            const filledCount = Math.min(score, 4);
+
+            strengthSegments.forEach((seg, i) => {
+                seg.className = 'segment';
+                if (i < filledCount) {
+                    seg.classList.add('filled', level);
+                }
+            });
+
+            // Label
+            const labels = {
+                weak: 'Weak — try adding more variety',
+                fair: 'Fair — getting there!',
+                good: 'Good — almost perfect!',
+                strong: 'Strong — great password!'
+            };
+            strengthLabel.textContent = password ? labels[level] : 'Enter a password';
+            strengthLabel.className = 'label' + (password ? ' ' + level : '');
+
+            strengthCount.textContent = password ? `${password.length} / 8+` : '0 / 8+';
+
+            return { score, level, checks };
+        }
+
+        // ============================================================
+        //  OTP / VERIFICATION
+        // ============================================================
+        function generateOTP() {
+            return String(Math.floor(100000 + Math.random() * 900000));
+        }
+
+        function handleOTPInput(e) {
+            const input = e.target;
+            const index = Array.from(otpInputs).indexOf(input);
+            if (input.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+            // Auto-submit when all filled
+            const allFilled = Array.from(otpInputs).every(inp => inp.value.length === 1);
+            if (allFilled) {
+                setTimeout(() => verifyBtn.click(), 300);
+            }
+            otpError.textContent = '';
+        }
+
+        function handleOTPKeydown(e) {
+            const input = e.target;
+            const index = Array.from(otpInputs).indexOf(input);
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+            if (e.key === 'ArrowLeft' && index > 0) {
+                otpInputs[index - 1].focus();
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight' && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+                e.preventDefault();
+            }
+            // Allow only digits
+            if (!/^[0-9]$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' &&
+                e.key !== 'Delete' && e.key !== 'Tab') {
+                e.preventDefault();
+            }
+        }
+
+        function getOTPValue() {
+            return Array.from(otpInputs).map(inp => inp.value).join('');
+        }
+
+        function startResendTimer(seconds = 30) {
+            resendCooldown = true;
+            resendBtn.disabled = true;
+            let remaining = seconds;
+            resendTimer.textContent = `(${remaining}s)`;
+
+            if (resendTimerInterval) clearInterval(resendTimerInterval);
+            resendTimerInterval = setInterval(() => {
+                remaining--;
+                resendTimer.textContent = `(${remaining}s)`;
+                if (remaining <= 0) {
+                    clearInterval(resendTimerInterval);
+                    resendTimerInterval = null;
+                    resendCooldown = false;
+                    resendBtn.disabled = false;
+                    resendTimer.textContent = '';
+                }
+            }, 1000);
+        }
+
+        // ============================================================
+        //  ROLE SELECTOR
+        // ============================================================
+        document.querySelectorAll('.role-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    document.querySelectorAll('.role-option').forEach(o => {
+                        o.classList.remove('active');
+                        o.setAttribute('aria-checked', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-checked', 'true');
+                    selectedRole = radio.value;
+                    document.getElementById('roleError').innerHTML = '';
+                }
+            });
+
+            opt.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // ============================================================
+        //  TOGGLE PASSWORD
+        // ============================================================
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            const icon = this.querySelector('i');
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        });
+
+        togglePassword.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+
+        // ============================================================
+        //  PASSWORD REAL-TIME
+        // ============================================================
+        passwordInput.addEventListener('input', function() {
+            updateStrength(this.value);
+            // Clear error while typing
+            setFieldError(this, document.getElementById('passwordError'), '');
+        });
+
+        // ============================================================
+        //  OTP EVENTS
+        // ============================================================
+        otpInputs.forEach(inp => {
+            inp.addEventListener('input', handleOTPInput);
+            inp.addEventListener('keydown', handleOTPKeydown);
+            inp.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').trim();
+                if (/^\d{6}$/.test(paste)) {
+                    const digits = paste.split('');
+                    otpInputs.forEach((inp, i) => {
+                        if (digits[i]) inp.value = digits[i];
+                    });
+                    // Auto-submit
+                    setTimeout(() => verifyBtn.click(), 200);
+                }
+            });
+        });
+
+        // ============================================================
+        //  STEP 1 → STEP 2 (SIGN UP)
+        // ============================================================
+        step1.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const isEmpValid = validateEmployeeId();
+            const isEmailValid = validateEmail();
+            const isPassValid = validatePassword();
+            const isRoleValid = validateRole();
+
+            if (!isEmpValid || !isEmailValid || !isPassValid || !isRoleValid) {
+                document.querySelectorAll('.input-wrapper.error').forEach(el => {
+                    el.classList.add('shake');
+                    setTimeout(() => el.classList.remove('shake'), 500);
+                });
+                showToast('Please fix the errors before continuing.', 'error');
+                return;
+            }
+
+            registeredEmail = emailInput.value.trim();
+            verifyEmailDisplay.textContent = registeredEmail;
+
+            signupBtn.disabled = true;
+            signupBtn.querySelector('.btn-text').textContent = 'Creating Account...';
+            const spinner = document.createElement('span');
+            spinner.className = 'btn-spinner';
+            signupBtn.querySelector('i')?.remove();
+            signupBtn.appendChild(spinner);
+
+            try {
+                const regData = {
+                    name: registeredEmail.split('@')[0],
+                    employeeId: employeeIdInput.value.trim(),
+                    email: registeredEmail,
+                    password: passwordInput.value,
+                    role: selectedRole.toLowerCase()
+                };
+
+                const res = await registerUser(regData);
+
+                signupBtn.disabled = false;
+                signupBtn.querySelector('.btn-text').textContent = 'Create Account';
+                spinner.remove();
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-arrow-right';
+                signupBtn.appendChild(icon);
+
+                if (res.success) {
+                    showToast('Account created successfully!', 'success', 4000);
+                    generatedOTP = generateOTP();
+                    console.log('🔑 Your OTP:', generatedOTP);
+                    showToast(`🔑 Verification Code: ${generatedOTP}`, 'info', 5000);
+                    otpInputs.forEach(inp => inp.value = '');
+                    otpError.textContent = '';
+                    startResendTimer(30);
+                    goToStep(2);
+                } else {
+                    showToast(res.message || 'Registration failed', 'error');
+                }
+            } catch (err) {
+                signupBtn.disabled = false;
+                signupBtn.querySelector('.btn-text').textContent = 'Create Account';
+                spinner.remove();
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-arrow-right';
+                signupBtn.appendChild(icon);
+                showToast(err.message || 'Registration failed', 'error');
+            }
+        });
+
+        // ============================================================
+        //  BACK TO STEP 1
+        // ============================================================
+        backToStep1.addEventListener('click', function() {
+            goToStep(1);
+            if (resendTimerInterval) {
+                clearInterval(resendTimerInterval);
+                resendTimerInterval = null;
+                resendCooldown = false;
+                resendBtn.disabled = false;
+                resendTimer.textContent = '';
+            }
+        });
+
+        // ============================================================
+        //  VERIFY OTP
+        // ============================================================
+        verifyBtn.addEventListener('click', function() {
+            if (isVerifying) return;
+
+            const otp = getOTPValue();
+            if (otp.length !== 6) {
+                otpError.innerHTML =
+                    `<span class="error-icon"><i class="fas fa-circle-exclamation"></i></span> Please enter all 6 digits`;
+                otpInputs.forEach(inp => {
+                    if (!inp.value) inp.closest('.input-wrapper')?.classList.add('error');
+                });
+                showToast('Please enter the complete 6-digit code.', 'error');
+                return;
+            }
+
+            isVerifying = true;
+            verifyBtn.disabled = true;
+            verifyBtn.querySelector('.btn-text').textContent = 'Verifying...';
+            const spinner = document.createElement('span');
+            spinner.className = 'btn-spinner';
+            verifyBtn.querySelector('i')?.remove();
+            verifyBtn.appendChild(spinner);
+
+            setTimeout(() => {
+                isVerifying = false;
+                verifyBtn.disabled = false;
+                verifyBtn.querySelector('.btn-text').textContent = 'Verify';
+                spinner.remove();
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-check';
+                verifyBtn.appendChild(icon);
+
+                if (otp === generatedOTP) {
+                    // SUCCESS
+                    otpError.textContent = '';
+                    showToast('✅ Email verified successfully!', 'success', 3000);
+                    // Show success step
+                    const roleDisplay = document.getElementById('successRoleBadge');
+                    roleDisplay.textContent = selectedRole;
+                    goToStep(3);
+                    // Cleanup
+                    if (resendTimerInterval) {
+                        clearInterval(resendTimerInterval);
+                        resendTimerInterval = null;
+                    }
+                } else {
+                    otpError.innerHTML =
+                        `<span class="error-icon"><i class="fas fa-circle-exclamation"></i></span> Invalid code. Please try again.`;
+                    showToast('❌ Invalid verification code', 'error');
+                    otpInputs.forEach(inp => {
+                        inp.value = '';
+                        inp.focus();
+                    });
+                    otpInputs[0].focus();
+                }
+            }, 1000);
+        });
+
+        // ============================================================
+        //  RESEND OTP
+        // ============================================================
+        resendBtn.addEventListener('click', function() {
+            if (resendCooldown) return;
+            generatedOTP = generateOTP();
+            console.log('🔑 New OTP:', generatedOTP);
+            showToast(`📧 New code sent: ${generatedOTP} (check console)`, 'info', 4000);
+            otpInputs.forEach(inp => inp.value = '');
+            otpError.textContent = '';
+            otpInputs[0].focus();
+            startResendTimer(30);
+        });
+
+        // ============================================================
+        //  DASHBOARD BUTTON
+        // ============================================================
+        dashboardBtn.addEventListener('click', function() {
+            showToast('🚀 Welcome to your dashboard!', 'success', 3000);
+            // Reset to step 1 after a moment (for demo)
+            setTimeout(() => {
+                goToStep(1);
+                step1.reset();
+                passwordInput.type = 'password';
+                togglePassword.querySelector('i').className = 'fas fa-eye';
+                updateStrength('');
+                document.querySelectorAll('.input-wrapper.error').forEach(el => el.classList.remove('error'));
+                document.querySelectorAll('.form-error').forEach(el => el.innerHTML = '');
+                document.querySelector('input[name="role"][value="Employee"]').checked = true;
+                document.querySelectorAll('.role-option').forEach(o => {
+                    o.classList.toggle('active', o.querySelector('input[type="radio"]').checked);
+                });
+                selectedRole = 'Employee';
+                otpInputs.forEach(inp => inp.value = '');
+                if (resendTimerInterval) {
+                    clearInterval(resendTimerInterval);
+                    resendTimerInterval = null;
+                    resendCooldown = false;
+                    resendBtn.disabled = false;
+                    resendTimer.textContent = '';
+                }
+                showToast('🔄 Demo reset — ready for next signup', 'info', 2500);
+            }, 800);
+        });
+
+
+        employeeIdInput.addEventListener('blur', validateEmployeeId);
+        emailInput.addEventListener('blur', validateEmail);
+        passwordInput.addEventListener('blur', validatePassword);
+
+       
+        //  KEYBOARD SHORTCUT: Enter on OTP submits
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && currentStep === 2) {
+                const active = document.activeElement;
+                if (active && active.closest('#otpGroup')) {
+                    e.preventDefault();
+                    verifyBtn.click();
+                }
+            }
+        });
+
+        
+        goToStep(1);
+        updateStrength('');
+        console.log('🔐 Sign-up form ready — OTP will be shown in console & toast.');
+        console.log('💡 For demo purposes, the OTP is displayed in a toast notification.');
+    </script>
+
+</body>
+</html>

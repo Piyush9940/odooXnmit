@@ -92,3 +92,5 @@ export const handleUploadError = (error, req, res, next) => {
 
     next();
 };
+
+export default uploadDocument;

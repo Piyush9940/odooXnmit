@@ -18,9 +18,9 @@ import {
     deleteNotificationController
 } from "../controllers/notification.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
-import roleMiddleware from "../middlewares/role.middleware.js";
-import validate from "../middlewares/validation.middleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
+import validate from "../middleware/validation.middleware.js";
 
 import {
     sendNotificationValidator,

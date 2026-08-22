@@ -156,12 +156,15 @@ const calculateSalary = ({
 const createPayroll = async ({
     employeeId,
     month,
+    payrollMonth,
     year,
+    payrollYear,
     basicSalary,
     hra,
     allowances,
     bonuses,
     deductions,
+    salaryStructure,
     adminComment
 }) => {
     const normalizedEmployeeId =
@@ -178,10 +181,10 @@ const createPayroll = async ({
      * Validate month/year.
      */
     const numericMonth =
-        Number(month);
+        Number(payrollMonth || month);
 
     const numericYear =
-        Number(year);
+        Number(payrollYear || year);
 
     if (
         numericMonth < 1 ||
@@ -209,10 +212,10 @@ const createPayroll = async ({
             employeeId:
                 normalizedEmployeeId,
 
-            month:
+            payrollMonth:
                 numericMonth,
 
-            year:
+            payrollYear:
                 numericYear
         });
 
@@ -222,46 +225,38 @@ const createPayroll = async ({
         );
     }
 
+    const basic = basicSalary ?? salaryStructure?.basicSalary ?? 0;
+    const allowance = allowances ?? salaryStructure?.allowances ?? 0;
+    const deduction = deductions ?? salaryStructure?.deductions ?? 0;
+
     const salary =
         calculateSalary({
-            basicSalary,
+            basicSalary: basic,
             hra,
-            allowances,
+            allowances: allowance,
             bonuses,
-            deductions
+            deductions: deduction
         });
 
     const payroll =
         await Payroll.create({
+            employee: employee._id,
             employeeId:
                 normalizedEmployeeId,
 
-            month:
+            payrollMonth:
                 numericMonth,
 
-            year:
+            payrollYear:
                 numericYear,
 
-            basicSalary:
-                salary.basicSalary,
-
-            hra:
-                salary.hra,
-
-            allowances:
-                salary.allowances,
-
-            bonuses:
-                salary.bonuses,
-
-            deductions:
-                salary.deductions,
-
-            grossSalary:
-                salary.grossSalary,
-
-            netSalary:
-                salary.netSalary,
+            salaryStructure: {
+                basicSalary: salary.basicSalary,
+                allowances: salary.allowances,
+                deductions: salary.deductions,
+                grossSalary: salary.grossSalary,
+                netSalary: salary.netSalary
+            },
 
             status:
                 PAYROLL_STATUS.DRAFT,
@@ -1087,6 +1082,18 @@ const getPayrollSummary = async ({
     );
 };
 
+const deletePayroll = async (payrollId) => {
+    const payroll = await Payroll.findById(payrollId);
+
+    if (!payroll) {
+        throw new Error("Payroll not found");
+    }
+
+    await Payroll.deleteOne({ _id: payroll._id });
+
+    return { message: "Payroll deleted successfully" };
+};
+
 /*
 |--------------------------------------------------------------------------
 | Export
@@ -1098,6 +1105,7 @@ export {
 
     createPayroll,
     updatePayroll,
+    deletePayroll,
 
     getPayrollById,
     getMyPayroll,

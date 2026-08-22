@@ -93,7 +93,9 @@ const createNotification = async ({
     title,
     message,
     priority = NOTIFICATION_PRIORITIES.NORMAL,
-    metadata = {}
+    metadata = {},
+    sentBy,
+    adminId
 }) => {
     if (!employeeId) {
         throw new Error(
@@ -126,6 +128,9 @@ const createNotification = async ({
      */
     const notification =
         await Notification.create({
+            sender: sentBy || adminId || employee.user?._id || employee._id,
+            recipient: employee._id,
+            recipientEmployeeId: employee.employeeId,
             employeeId:
                 employee.employeeId,
 
@@ -162,7 +167,9 @@ const sendToEmployee = async ({
     message,
     type = NOTIFICATION_TYPES.GENERAL,
     priority = NOTIFICATION_PRIORITIES.NORMAL,
-    metadata = {}
+    metadata = {},
+    sentBy,
+    adminId
 }) => {
     return createNotification({
         employeeId,
@@ -170,7 +177,9 @@ const sendToEmployee = async ({
         message,
         type,
         priority,
-        metadata
+        metadata,
+        sentBy,
+        adminId
     });
 };
 
@@ -871,6 +880,36 @@ const createSystemNotification =
         });
     };
 
+const getAllNotifications = async ({ page = 1, limit = 20, unreadOnly = false } = {}) => {
+    const pageNumber = Math.max(Number(page) || 1, 1);
+    const limitNumber = Math.min(Math.max(Number(limit) || 20, 1), 100);
+    const filter = unreadOnly ? { read: false } : {};
+    const [notifications, total] = await Promise.all([
+        Notification.find(filter).sort({ createdAt: -1 }).skip((pageNumber - 1) * limitNumber).limit(limitNumber),
+        Notification.countDocuments(filter)
+    ]);
+
+    return {
+        notifications,
+        pagination: {
+            total,
+            page: pageNumber,
+            limit: limitNumber,
+            totalPages: Math.ceil(total / limitNumber)
+        }
+    };
+};
+
+const deleteNotification = async (notificationId) => {
+    const notification = await Notification.findByIdAndDelete(notificationId);
+
+    if (!notification) {
+        throw new Error("Notification not found");
+    }
+
+    return { message: "Notification deleted successfully" };
+};
+
 /*
 |--------------------------------------------------------------------------
 | Export
@@ -884,13 +923,17 @@ export {
     createNotification,
 
     sendToEmployee,
+    sendToEmployee as sendNotification,
     sendToEmployees,
+    sendToEmployees as sendBulkNotification,
 
     getMyNotifications,
     getMyNotificationById,
 
     markAsRead,
+    markAsRead as markNotificationAsRead,
     markAllAsRead,
+    markAllAsRead as markAllNotificationsAsRead,
 
     getUnreadCount,
 
@@ -898,6 +941,8 @@ export {
     deleteReadNotifications,
 
     getEmployeeNotifications,
+    getAllNotifications,
+    deleteNotification,
 
     createLeaveNotification,
     createPayrollNotification,

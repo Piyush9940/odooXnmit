@@ -11,9 +11,9 @@ import {
     getCurrentUserController
 } from "../controllers/auth.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
-import rateLimitMiddleware from "../middlewares/rateLimit.middleware.js";
-import validate from "../middlewares/validation.middleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import rateLimitMiddleware from "../middleware/rateLimit.middleware.js";
+import validate from "../middleware/validation.middleware.js";
 
 import {
     registerValidator,

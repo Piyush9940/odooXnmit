@@ -1,127 +1,87 @@
 import express from "express";
 
 import {
-    createEmployeeController,
-    getAllEmployeesController,
-    getEmployeeByIdController,
-    getMyProfileController,
-    updateEmployeeController,
-    updateMyProfileController,
-    deleteEmployeeController
-} from "../controllers/employee.controller.js";
+    checkInController,
+    checkOutController,
+    getMyAttendanceController,
+    getMyAttendanceSummaryController,
+    getEmployeeAttendanceController,
+    getAllAttendanceController,
+    getAttendanceByIdController,
+    updateAttendanceController
+} from "../controllers/attendance.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
-import roleMiddleware from "../middlewares/role.middleware.js";
-import validate from "../middlewares/validation.middleware.js";
-import uploadMiddleware from "../middlewares/upload.middleware.js";
-
-import {
-    createEmployeeValidator,
-    updateEmployeeValidator,
-    updateMyProfileValidator
-} from "../validators/employee.validator.js";
+import authMiddleware from "../middleware/auth.middleware.js";
+import roleMiddleware from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
 /*
 |--------------------------------------------------------------------------
-| Employee - Own Profile
+| Employee Attendance Routes
 |--------------------------------------------------------------------------
-*/
-
-/*
-| GET /api/employees/me
-| Employee can view their own profile
-*/
-
-router.get(
-    "/me",
-    authMiddleware,
-    roleMiddleware("EMPLOYEE"),
-    getMyProfileController
-);
-
-/*
-| PATCH /api/employees/me
-| Employee can update limited profile fields
-*/
-
-router.patch(
-    "/me",
-    authMiddleware,
-    roleMiddleware("EMPLOYEE"),
-    uploadMiddleware.single("profilePicture"),
-    validate(updateMyProfileValidator),
-    updateMyProfileController
-);
-
-/*
-|--------------------------------------------------------------------------
-| Admin - Employee Management
-|--------------------------------------------------------------------------
-*/
-
-/*
-| POST /api/employees
-| Admin creates an employee
 */
 
 router.post(
-    "/",
+    "/check-in",
     authMiddleware,
-    roleMiddleware("ADMIN"),
-    validate(createEmployeeValidator),
-    createEmployeeController
+    roleMiddleware("EMPLOYEE"),
+    checkInController
+);
+
+router.post(
+    "/check-out",
+    authMiddleware,
+    roleMiddleware("EMPLOYEE"),
+    checkOutController
+);
+
+router.get(
+    "/me",
+    authMiddleware,
+    roleMiddleware("EMPLOYEE"),
+    getMyAttendanceController
+);
+
+router.get(
+    "/me/summary",
+    authMiddleware,
+    roleMiddleware("EMPLOYEE"),
+    getMyAttendanceSummaryController
 );
 
 /*
-| GET /api/employees
-| Admin views all employees
+|--------------------------------------------------------------------------
+| Admin Attendance Routes
+|--------------------------------------------------------------------------
 */
+
+router.get(
+    "/employee/:employeeId",
+    authMiddleware,
+    roleMiddleware("ADMIN"),
+    getEmployeeAttendanceController
+);
 
 router.get(
     "/",
     authMiddleware,
     roleMiddleware("ADMIN"),
-    getAllEmployeesController
+    getAllAttendanceController
 );
-
-/*
-| GET /api/employees/:employeeId
-| Admin views a specific employee
-*/
 
 router.get(
-    "/:employeeId",
+    "/:attendanceId",
     authMiddleware,
     roleMiddleware("ADMIN"),
-    getEmployeeByIdController
+    getAttendanceByIdController
 );
-
-/*
-| PATCH /api/employees/:employeeId
-| Admin can update employee details
-*/
 
 router.patch(
-    "/:employeeId",
+    "/:attendanceId",
     authMiddleware,
     roleMiddleware("ADMIN"),
-    uploadMiddleware.single("profilePicture"),
-    validate(updateEmployeeValidator),
-    updateEmployeeController
-);
-
-/*
-| DELETE /api/employees/:employeeId
-| Admin deactivates employee
-*/
-
-router.delete(
-    "/:employeeId",
-    authMiddleware,
-    roleMiddleware("ADMIN"),
-    deleteEmployeeController
+    updateAttendanceController
 );
 
 export default router;

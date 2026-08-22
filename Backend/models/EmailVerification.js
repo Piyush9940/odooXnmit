@@ -27,8 +27,7 @@ const emailVerificationSchema = new mongoose.Schema(
 
         expiresAt: {
             type: Date,
-            required: [true, "Token expiry is required"],
-            index: true
+            required: [true, "Token expiry is required"]
         },
 
         verifiedAt: {

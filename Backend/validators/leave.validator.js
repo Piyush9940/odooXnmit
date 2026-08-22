@@ -18,10 +18,8 @@ const employeeId = Joi.string()
     .required()
     .messages({
         "string.empty": "Employee ID is required",
-        "string.pattern.base":
-            "Employee ID must follow the format EMP001",
-        "any.required":
-            "Employee ID is required"
+        "string.pattern.base": "Employee ID must follow the format EMP001",
+        "any.required": "Employee ID is required"
     });
 
 const optionalEmployeeId = Joi.string()
@@ -29,8 +27,7 @@ const optionalEmployeeId = Joi.string()
     .uppercase()
     .pattern(/^EMP\d{3,}$/)
     .messages({
-        "string.pattern.base":
-            "Employee ID must follow the format EMP001"
+        "string.pattern.base": "Employee ID must follow the format EMP001"
     });
 
 const leaveType = Joi.string()
@@ -41,73 +38,42 @@ const leaveType = Joi.string()
     )
     .required()
     .messages({
-        "any.only":
-            "Leave type must be paid, sick, or unpaid",
-        "any.required":
-            "Leave type is required"
+        "any.only": "Leave type must be paid, sick, or unpaid",
+        "any.required": "Leave type is required"
     });
 
 /*
 |--------------------------------------------------------------------------
 | Apply Leave
 |--------------------------------------------------------------------------
-|
-| Used by Employee.
-|
-| totalDays is intentionally NOT accepted.
-| Backend calculates it from startDate/endDate.
-|
 */
 
 const applyLeaveSchema = Joi.object({
     leaveType,
+    startDate: Joi.date().iso().required().messages({
+        "date.base": "Invalid start date",
+        "date.format": "Start date must be in valid ISO format",
+        "any.required": "Start date is required"
+    }),
+    endDate: Joi.date().iso().required().messages({
+        "date.base": "Invalid end date",
+        "date.format": "End date must be in valid ISO format",
+        "any.required": "End date is required"
+    }),
+    reason: Joi.string().trim().max(1000).allow("").default(""),
+    remarks: Joi.string().trim().max(1000).allow("").default("")
+}).custom((value, helpers) => {
+    const start = new Date(value.startDate);
+    const end = new Date(value.endDate);
 
-    startDate: Joi.date()
-        .iso()
-        .required()
-        .messages({
-            "date.base":
-                "Invalid start date",
-            "date.format":
-                "Start date must be in valid ISO format",
-            "any.required":
-                "Start date is required"
-        }),
+    if (end < start) {
+        return helpers.error("any.dateRange");
+    }
 
-    endDate: Joi.date()
-        .iso()
-        .required()
-        .messages({
-            "date.base":
-                "Invalid end date",
-            "date.format":
-                "End date must be in valid ISO format",
-            "any.required":
-                "End date is required"
-        }),
-
-    reason: Joi.string()
-        .trim()
-        .max(1000)
-        .allow("")
-        .default("")
-})
-    .custom((value, helpers) => {
-        const start = new Date(value.startDate);
-        const end = new Date(value.endDate);
-
-        if (end < start) {
-            return helpers.error(
-                "any.dateRange"
-            );
-        }
-
-        return value;
-    })
-    .messages({
-        "any.dateRange":
-            "End date cannot be before start date"
-    });
+    return value;
+}).messages({
+    "any.dateRange": "End date cannot be before start date"
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -116,170 +82,67 @@ const applyLeaveSchema = Joi.object({
 */
 
 const approveLeaveSchema = Joi.object({
-    adminComment: Joi.string()
-        .trim()
-        .max(1000)
-        .allow("")
-        .default("")
+    adminComment: Joi.string().trim().max(1000).allow("").optional(),
+    comment: Joi.string().trim().max(1000).allow("").optional()
 });
 
 /*
 |--------------------------------------------------------------------------
 | Admin Reject Leave
 |--------------------------------------------------------------------------
-|
-| A rejection comment is required so the employee
-| knows why the request was rejected.
-|
 */
 
 const rejectLeaveSchema = Joi.object({
-    adminComment: Joi.string()
-        .trim()
-        .min(1)
-        .max(1000)
-        .required()
-        .messages({
-            "string.empty":
-                "Rejection comment is required",
-            "string.min":
-                "Rejection comment is required",
-            "string.max":
-                "Rejection comment cannot exceed 1000 characters",
-            "any.required":
-                "Rejection comment is required"
-        })
+    adminComment: Joi.string().trim().max(1000).allow("").optional(),
+    comment: Joi.string().trim().max(1000).allow("").optional()
 });
 
 /*
 |--------------------------------------------------------------------------
 | Admin Update Leave
 |--------------------------------------------------------------------------
-|
-| Used only when the Admin needs to modify a
-| pending request.
-|
 */
 
 const updateLeaveSchema = Joi.object({
-    leaveType: Joi.string()
-        .valid(
-            LEAVE_TYPES.PAID,
-            LEAVE_TYPES.SICK,
-            LEAVE_TYPES.UNPAID
-        ),
-
-    startDate: Joi.date()
-        .iso()
-        .messages({
-            "date.base":
-                "Invalid start date",
-            "date.format":
-                "Start date must be in valid ISO format"
-        }),
-
-    endDate: Joi.date()
-        .iso()
-        .messages({
-            "date.base":
-                "Invalid end date",
-            "date.format":
-                "End date must be in valid ISO format"
-        }),
-
-    reason: Joi.string()
-        .trim()
-        .max(1000)
-        .allow("")
-})
-    .min(1)
-    .custom((value, helpers) => {
-        /*
-         * Date-range validation is performed here
-         * only when both dates are provided.
-         */
-        if (
-            value.startDate &&
-            value.endDate
-        ) {
-            const start = new Date(
-                value.startDate
-            );
-
-            const end = new Date(
-                value.endDate
-            );
-
-            if (end < start) {
-                return helpers.error(
-                    "any.dateRange"
-                );
-            }
-        }
-
-        return value;
-    })
-    .messages({
-        "any.dateRange":
-            "End date cannot be before start date"
-    });
+    leaveType: Joi.string().valid(
+        LEAVE_TYPES.PAID,
+        LEAVE_TYPES.SICK,
+        LEAVE_TYPES.UNPAID
+    ),
+    startDate: Joi.date().iso().messages({
+        "date.base": "Invalid start date",
+        "date.format": "Start date must be in valid ISO format"
+    }),
+    endDate: Joi.date().iso().messages({
+        "date.base": "Invalid end date",
+        "date.format": "End date must be in valid ISO format"
+    }),
+    reason: Joi.string().trim().max(1000).allow("")
+}).min(1);
 
 /*
 |--------------------------------------------------------------------------
 | Leave Query
 |--------------------------------------------------------------------------
-|
-| Used by Admin for leave dashboard/filtering.
-|
 */
 
 const leaveQuerySchema = Joi.object({
     employeeId: optionalEmployeeId,
-
-    status: Joi.string()
-        .valid(
-            LEAVE_STATUS.PENDING,
-            LEAVE_STATUS.APPROVED,
-            LEAVE_STATUS.REJECTED
-        ),
-
-    leaveType: Joi.string()
-        .valid(
-            LEAVE_TYPES.PAID,
-            LEAVE_TYPES.SICK,
-            LEAVE_TYPES.UNPAID
-        ),
-
-    startDate: Joi.date()
-        .iso()
-        .optional()
-        .messages({
-            "date.base":
-                "Invalid start date",
-            "date.format":
-                "Start date must be in valid ISO format"
-        }),
-
-    endDate: Joi.date()
-        .iso()
-        .optional()
-        .messages({
-            "date.base":
-                "Invalid end date",
-            "date.format":
-                "End date must be in valid ISO format"
-        }),
-
-    page: Joi.number()
-        .integer()
-        .min(1)
-        .default(1),
-
-    limit: Joi.number()
-        .integer()
-        .min(1)
-        .max(100)
-        .default(10)
+    status: Joi.string().valid(
+        LEAVE_STATUS.PENDING,
+        LEAVE_STATUS.APPROVED,
+        LEAVE_STATUS.REJECTED,
+        "cancelled"
+    ),
+    leaveType: Joi.string().valid(
+        LEAVE_TYPES.PAID,
+        LEAVE_TYPES.SICK,
+        LEAVE_TYPES.UNPAID
+    ),
+    startDate: Joi.date().iso().optional(),
+    endDate: Joi.date().iso().optional(),
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10)
 });
 
 /*
@@ -289,32 +152,21 @@ const leaveQuerySchema = Joi.object({
 */
 
 const leaveIdParamSchema = Joi.object({
-    leaveId: Joi.string()
-        .trim()
-        .hex()
-        .length(24)
-        .required()
-        .messages({
-            "string.hex":
-                "Invalid leave ID",
-            "string.length":
-                "Invalid leave ID",
-            "any.required":
-                "Leave ID is required"
-        })
+    leaveId: Joi.string().trim().hex().length(24).required().messages({
+        "string.hex": "Invalid leave ID",
+        "string.length": "Invalid leave ID",
+        "any.required": "Leave ID is required"
+    })
 });
-
-/*
-|--------------------------------------------------------------------------
-| Export
-|--------------------------------------------------------------------------
-*/
 
 export {
     applyLeaveSchema,
+    applyLeaveSchema as applyLeaveValidator,
     approveLeaveSchema,
     rejectLeaveSchema,
     updateLeaveSchema,
     leaveQuerySchema,
+    leaveQuerySchema as leaveQueryValidator,
+    approveLeaveSchema as leaveActionValidator,
     leaveIdParamSchema
 };

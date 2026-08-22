@@ -793,6 +793,10 @@ const getCurrentUser = async (
     return user;
 };
 
+const logoutUser = async () => ({
+    message: "Logout successful"
+});
+
 /*
 |--------------------------------------------------------------------------
 | Export
@@ -801,11 +805,14 @@ const getCurrentUser = async (
 
 export {
     signup,
+    signup as registerUser,
     signin,
+    signin as loginUser,
     verifyEmail,
     resendVerificationEmail,
     forgotPassword,
     resetPassword,
     changePassword,
-    getCurrentUser
+    getCurrentUser,
+    logoutUser
 };

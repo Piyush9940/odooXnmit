@@ -34,7 +34,9 @@ const authMiddleware = async (req, res, next) => {
             });
         }
 
-        if (!process.env.JWT_SECRET) {
+        const jwtSecret = process.env.JWT_SECRET || process.env.JWT_ACCESS_SECRET;
+
+        if (!jwtSecret) {
             console.error("JWT_SECRET is not configured");
 
             return res.status(500).json({
@@ -50,7 +52,7 @@ const authMiddleware = async (req, res, next) => {
         try {
             decoded = jwt.verify(
                 token,
-                process.env.JWT_SECRET
+                jwtSecret
             );
         } catch (error) {
             if (error.name === "TokenExpiredError") {

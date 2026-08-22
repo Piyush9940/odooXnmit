@@ -217,6 +217,7 @@ const applyLeave = async ({
      */
     const leave =
         await Leave.create({
+            employee: employee._id,
             employeeId:
                 employee.employeeId,
 
@@ -555,17 +556,22 @@ const getAllLeaves = async ({
 const approveLeave = async ({
     leaveId,
     adminComment,
-    adminUserId
+    comment,
+    adminUserId,
+    adminId
 }) => {
+    const effectiveAdminId = adminUserId || adminId;
+    const effectiveComment = adminComment || comment || "";
+
     const leave =
         await Leave.findById(
             leaveId
         );
 
     if (!leave) {
-        throw new Error(
-            "Leave request not found"
-        );
+        const error = new Error("Leave request not found");
+        error.statusCode = 404;
+        throw error;
     }
 
     if (
@@ -588,10 +594,6 @@ const approveLeave = async ({
     /*
      * Check again for overlapping approved
      * leave before approval.
-     *
-     * This prevents conflicts if another
-     * request was approved while this request
-     * was pending.
      */
     const overlapping =
         await Leave.findOne({
@@ -627,10 +629,10 @@ const approveLeave = async ({
         LEAVE_STATUS.APPROVED;
 
     leave.adminComment =
-        adminComment || null;
+        effectiveComment || null;
 
     leave.approvedBy =
-        adminUserId;
+        effectiveAdminId;
 
     leave.approvedAt =
         new Date();
@@ -641,8 +643,10 @@ const approveLeave = async ({
      * Create in-app notification.
      */
     await Notification.create({
-        employeeId:
-            employee.employeeId,
+        sender: effectiveAdminId,
+        recipient: employee._id,
+        recipientEmployeeId: employee.employeeId,
+        employeeId: employee.employeeId,
 
         type: "leave",
 
@@ -716,17 +720,22 @@ const approveLeave = async ({
 const rejectLeave = async ({
     leaveId,
     adminComment,
-    adminUserId
+    comment,
+    adminUserId,
+    adminId
 }) => {
+    const effectiveAdminId = adminUserId || adminId;
+    const effectiveComment = adminComment || comment || "";
+
     const leave =
         await Leave.findById(
             leaveId
         );
 
     if (!leave) {
-        throw new Error(
-            "Leave request not found"
-        );
+        const error = new Error("Leave request not found");
+        error.statusCode = 404;
+        throw error;
     }
 
     if (
@@ -735,18 +744,6 @@ const rejectLeave = async ({
     ) {
         throw new Error(
             `Leave request is already ${leave.status}`
-        );
-    }
-
-    /*
-     * Rejection should have a reason.
-     */
-    if (
-        !adminComment ||
-        !adminComment.trim()
-    ) {
-        throw new Error(
-            "Admin comment is required when rejecting leave"
         );
     }
 
@@ -759,10 +756,10 @@ const rejectLeave = async ({
         LEAVE_STATUS.REJECTED;
 
     leave.adminComment =
-        adminComment.trim();
+        effectiveComment;
 
     leave.rejectedBy =
-        adminUserId;
+        effectiveAdminId;
 
     leave.rejectedAt =
         new Date();
@@ -773,8 +770,10 @@ const rejectLeave = async ({
      * In-app notification.
      */
     await Notification.create({
-        employeeId:
-            employee.employeeId,
+        sender: effectiveAdminId,
+        recipient: employee._id,
+        recipientEmployeeId: employee.employeeId,
+        employeeId: employee.employeeId,
 
         type: "leave",
 

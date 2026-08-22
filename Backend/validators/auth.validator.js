@@ -220,10 +220,15 @@ const changePasswordSchema = Joi.object({
 
 export {
     signupSchema,
+    signupSchema as registerValidator,
     loginSchema,
+    loginSchema as loginValidator,
     verifyEmailSchema,
+    verifyEmailSchema as verifyEmailValidator,
     resendVerificationSchema,
     forgotPasswordSchema,
+    forgotPasswordSchema as forgotPasswordValidator,
     resetPasswordSchema,
+    resetPasswordSchema as resetPasswordValidator,
     changePasswordSchema
 };

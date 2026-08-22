@@ -25,4 +25,6 @@ const connectResend = () => {
     }
 };
 
-export default connectResend;
+const resend = connectResend();
+
+export default resend;

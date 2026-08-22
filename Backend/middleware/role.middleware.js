@@ -39,9 +39,9 @@ const roleMiddleware = (...allowedRoles) => {
                 });
             }
 
-            const hasPermission = allowedRoles.includes(
-                req.user.role
-            );
+            const hasPermission = allowedRoles
+                .map((role) => role.toLowerCase())
+                .includes(req.user.role.toLowerCase());
 
             if (!hasPermission) {
                 return res.status(403).json({

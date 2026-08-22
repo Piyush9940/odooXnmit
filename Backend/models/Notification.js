@@ -171,26 +171,20 @@ notificationSchema.index({
  * Automatically set readAt when notification
  * becomes read.
  */
-notificationSchema.pre("save", function (next) {
-    try {
-        if (
-            this.isModified("read") &&
-            this.read === true &&
-            !this.readAt
-        ) {
-            this.readAt = new Date();
-        }
+notificationSchema.pre("save", function () {
+    if (
+        this.isModified("read") &&
+        this.read === true &&
+        !this.readAt
+    ) {
+        this.readAt = new Date();
+    }
 
-        if (
-            this.isModified("read") &&
-            this.read === false
-        ) {
-            this.readAt = null;
-        }
-
-        next();
-    } catch (error) {
-        next(error);
+    if (
+        this.isModified("read") &&
+        this.read === false
+    ) {
+        this.readAt = null;
     }
 });
 
