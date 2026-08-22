@@ -113,6 +113,10 @@ async function apiRequest(endpoint, options = {}) {
 
         return data;
     } catch (error) {
+        if (error.name === "TypeError" || error.message.includes("fetch")) {
+            console.error(`[Network Error] Could not connect to backend API at ${url}.`);
+            throw new Error("Unable to connect to backend server. Please verify the server is running at http://localhost:5000.");
+        }
         console.error(`[API Error] ${options.method || 'GET'} ${url}:`, error.message);
         throw error;
     }
