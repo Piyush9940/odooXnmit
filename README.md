@@ -2,7 +2,7 @@
 
 Dayflow is a modern, full-stack HR and Employee Management System designed to streamline attendance tracking, leave requests, payroll processing, document management, and administrative reporting for organizations.
 
-Built with a **Vanilla JavaScript, HTML5, and CSS3** frontend connected via native `fetch()` API calls to a **Node.js, Express, and MongoDB** RESTful backend with JWT Bearer authentication.
+Built with a **Vanilla JavaScript, HTML5, and CSS3** frontend connected via native `fetch()` API calls to a **Node .js, Express, and MongoDB** RESTful backend with JWT Bearer authentication.
 
 ---
 
