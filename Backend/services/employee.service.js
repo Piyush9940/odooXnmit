@@ -40,7 +40,7 @@ const getEmployeeById = async (
         }).populate({
             path: "user",
             select:
-                "email role emailVerified isActive lastLoginAt"
+                "email role emailVerified isActive lastLoginAt another device"
         });
 
     if (!employee) {
